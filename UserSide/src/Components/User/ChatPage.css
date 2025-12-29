@@ -1,0 +1,100 @@
+.chat-container {
+  height: 100vh;
+  background: #f0f2f5;
+}
+
+.chat-left {
+  background: #e5ddd5;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-placeholder {
+  margin: auto;
+  text-align: center;
+  color: #555;
+}
+
+.chat-header {
+  padding: 15px;
+  background: #075e54;
+  color: white;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.message {
+  max-width: 70%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.message.left {
+  background: #fff;
+  align-self: flex-start;
+}
+
+.message.right {
+  background: #dcf8c6;
+  align-self: flex-end;
+}
+
+.chat-input {
+  display: flex;
+  padding: 10px;
+  background: #f0f0f0;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.chat-input button {
+  margin-left: 10px;
+  padding: 8px 16px;
+  background: #075e54;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+.chat-right {
+  background: #ffffff;
+  border-left: 1px solid #ddd;
+  overflow-y: auto;
+}
+
+.chat-list-title {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat-card {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.chat-card:hover {
+  background: #f5f5f5;
+}
+
+.chat-card h6 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.chat-card p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  color: #555;
+}

@@ -1,0 +1,289 @@
+:root {
+    --primary-color: #2196f3;
+    --secondary-color: #f1f4f7;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --background-light: #f5f5f5;
+    --white: #ffffff;
+    --border-radius: 12px;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  /* Sidebar Styles */
+  .sidebar {
+    width: 280px;
+    background-color: var(--white);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+  
+  .sidebar {
+    background-color: #ffffff !important; /* White */
+  }
+
+  .logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+  }
+  
+  .logo-text {
+    color: var(--primary-color);
+    font-size: 24px;
+    font-weight: 600;
+  }
+  
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: auto;
+  }
+  
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: var(--text-primary);
+    border-radius: var(--border-radius);
+    transition: all 0.3s ease;
+  }
+  
+  .nav-item:hover,
+  .nav-item.active {
+    background-color: var(--secondary-color);
+    color: var(--primary-color);
+  }
+  
+  .nav-item i {
+    width: 20px;
+  }
+  
+  .doctor-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-top: 24px;
+    border-top: 1px solid #eee;
+  }
+  
+  .profile-avatar img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+  
+  .profile-info h3 {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+  
+  .profile-info p {
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+  
+  /* Main Content Styles */
+  .main-content {
+    flex: 1;
+    padding: 24px;
+  }
+  
+  .top-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  
+  .search-container {
+    position: relative;
+    width: 400px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--white);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+  }
+  
+  .header-actions {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .icon-button {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: var(--white);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+  }
+  
+  .notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background-color: var(--primary-color);
+    color: var(--white);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+  }
+  
+  /* Dashboard Content Styles */
+  .dashboard-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+  }
+  
+  .appointments-section,
+  .stats-section {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .appointments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  
+  .appointment-card {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .appointment-time {
+    width: 100px;
+    font-weight: 500;
+  }
+  
+  .appointment-details {
+    flex: 1;
+  }
+  
+  .appointment-details h4 {
+    margin-bottom: 4px;
+  }
+  
+  .appointment-details p {
+    color: var(--text-secondary);
+  }
+  
+  .status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .status-badge.pending {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+  
+  .status-badge.completed {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  
+  .status-badge.upcoming {
+    background-color: #cce5ff;
+    color: #004085;
+  }
+  
+  .stats-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .stat-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+  }
+  
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+  }
+  
+  .stat-details h3 {
+    font-size: 24px;
+    margin-bottom: 4px;
+  }
+  
+  .stat-details p {
+    color: var(--text-secondary);
+  }
+  
+  @media (max-width: 1024px) {
+    .dashboard-content {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .dashboard-container {
+      flex-direction: column;
+    }
+  
+    .sidebar {
+      width: 100%;
+      padding: 16px;
+    }
+  
+    .search-container {
+      width: 100%;
+      max-width: 400px;
+    }
+  }

@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+    
+}
+#hero {
+    background: url('https://i.pinimg.com/736x/63/90/78/639078f337ee5ee3680ab3ea0f259c0d.jpg') no-repeat center;
+    background-size: cover;
+    color: white;
+}
+.carousel-section img {
+    max-height: 400px;
+    object-fit: cover;
+}
+
+/* Style for the whole text */
+.custom-font-color {
+    color: #f39c12; /* Golden yellow */
+    font-family: 'Comic Sans MS', sans-serif; /* You can use any fun font */
+    font-weight: bold;
+  }
+  .navbar {
+    padding: 10px 20px; /* Reduce padding (adjust values as needed) */
+  }
+  
+  /* Style for the "oo" part of "WoofTale" */
+  .custom-oo {
+    color: #8e44ad; /* Purple or any color you like */
+    font-size: 1.5em; /* Make the "oo" a bit larger */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a shadow for depth */
+  }
+  
+
+  /* Add a custom font for the heading */
+.custom-heading {
+    font-family: 'Poppins', sans-serif; /* You can use Google Fonts or any other font */
+    font-weight: 700;
+    color: #f39c12; /* Beautiful golden color */
+    text-align: center; /* Center-align the text */
+    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Add a shadow for depth */
+  }
+  
+  /* Paw icon style */
+  .paw-icon {
+    color: #8e44ad; /* Purple paw color */
+    font-size: 2rem; /* Make the paw bigger */
+    margin-right: 10px; /* Add spacing between paw and text */
+  }
+  
+  /* Animation for fun effect */
+  @keyframes paw-animation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+  }
+  
+  .paw-icon:hover {
+    animation: paw-animation 0.5s ease-in-out;
+  }
+  

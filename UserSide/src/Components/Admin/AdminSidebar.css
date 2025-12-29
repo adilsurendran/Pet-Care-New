@@ -1,0 +1,46 @@
+.sidebar-container {
+    width: 220px;
+    height: 100vh;
+    background: linear-gradient(135deg, #375d87, #70b3f7);
+    padding: 20px;
+    box-shadow: 4px 0 10px rgba(189, 47, 47, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .sidebar-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .logout-btn {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 50px; /* Oval Shape */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+  }
+  
+  .logout-btn .icon {
+    color: white;
+  }
+  
+  .logout-btn:hover {
+    background: linear-gradient(135deg, #ff6b6b, #e74c3c);
+    box-shadow: 0px 0px 20px rgba(255, 0, 0, 0.8);
+  }
+  
+  .logout-btn:active {
+    transform: scale(0.95);
+  }
+  

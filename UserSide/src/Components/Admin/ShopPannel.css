@@ -1,0 +1,115 @@
+.shop-container {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .shop-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .shop-table th, .shop-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .shop-table th {
+    background: #3f51b5;
+    color: white;
+  }
+  
+  .shop-table tr:hover {
+    background: #f4f4f4;
+    transition: 0.3s;
+  }
+  
+  .status {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  
+  .status.approved {
+    color: white;
+    background: #28a745;
+  }
+  
+  .status.pending {
+    color: white;
+    background: #ffc107;
+  }
+  
+  .status.suspended {
+    color: white;
+    background: #dc3545;
+  }
+  
+  .approve-btn {
+    background: #007bff;
+    color: white;
+    padding: 8px 12px;
+    margin-right: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .suspend-btn {
+    background: #ff9800;
+    color: white;
+    padding: 8px 12px;
+    margin-right: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .delete-btn {
+    background: #ff3d00;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .approve-btn:hover {
+    background: #0056b3;
+  }
+  
+  .suspend-btn:hover {
+    background: #e65100;
+  }
+  
+  .delete-btn:hover {
+    background: #d32f2f;
+  }
+  
+  .block-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.unblock-btn {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}

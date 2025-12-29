@@ -1,0 +1,79 @@
+.seller-container {
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .seller-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .seller-table th, .seller-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .seller-table th {
+    background: #673ab7;
+    color: white;
+  }
+  
+  .seller-table tr:hover {
+    background: #f4f4f4;
+    transition: 0.3s;
+  }
+  
+  .status {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  
+  .status.approved {
+    color: white;
+    background: #28a745;
+  }
+  
+  .status.pending {
+    color: white;
+    background: #ffc107;
+  }
+  
+  .approve-btn {
+    background: #007bff;
+    color: white;
+    padding: 8px 12px;
+    margin-right: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .delete-btn {
+    background: #ff3d00;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .approve-btn:hover {
+    background: #0056b3;
+  }
+  
+  .delete-btn:hover {
+    background: #d32f2f;
+  }
+  

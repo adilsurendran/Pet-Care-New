@@ -1,0 +1,198 @@
+.appointment-dashboard {
+    padding: 20px;
+    background-color: #f5f5f5;
+    min-height: 100vh;
+  }
+  
+  .appointment-header {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+  
+  .appointment-header h1 {
+    margin: 0 0 20px 0;
+    color: #333;
+  }
+  
+  .filter-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .filter-controls select,
+  .filter-controls input {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+  }
+  
+  .new-appointment {
+    padding: 8px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  
+  .appointments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+  }
+  
+  .appointment-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .appointment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+  }
+  
+  .time-info h3 {
+    margin: 0;
+    color: #333;
+    font-size: 1.1em;
+  }
+  
+  .time-info p {
+    margin: 5px 0;
+    color: #666;
+  }
+  
+  .status-badge {
+    padding: 5px 10px;
+    border-radius: 15px;
+    border: none;
+    font-size: 0.9em;
+    cursor: pointer;
+  }
+  
+  .status-badge.scheduled {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  .status-badge.completed {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+  
+  .status-badge.cancelled {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+  
+  .appointment-details {
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+  }
+  
+  .pet-details h3 {
+    margin: 0;
+    color: #333;
+  }
+  
+  .pet-details p {
+    margin: 5px 0;
+    color: #666;
+  }
+  
+  .appointment-reason,
+  .appointment-notes {
+    margin-top: 15px;
+  }
+  
+  .appointment-reason h4,
+  .appointment-notes h4 {
+    margin: 0 0 5px 0;
+    color: #333;
+  }
+  
+  .appointment-reason p,
+  .appointment-notes p {
+    margin: 0;
+    color: #666;
+    font-size: 0.9em;
+  }
+  
+  .appointment-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .appointment-actions button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: opacity 0.2s;
+  }
+  
+  .edit-btn {
+    background-color: #FFC107;
+    color: black;
+  }
+  
+  .view-history-btn {
+    background-color: #2196F3;
+    color: white;
+  }
+  
+  .start-consultation-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .appointment-actions button:hover {
+    opacity: 0.9;
+  }
+  
+  /* Card status colors */
+  .appointment-card.scheduled {
+    border-left: 4px solid #1976d2;
+  }
+  
+  .appointment-card.completed {
+    border-left: 4px solid #2e7d32;
+  }
+  
+  .appointment-card.cancelled {
+    border-left: 4px solid #c62828;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .filter-controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .appointments-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .appointment-actions {
+      flex-direction: column;
+    }
+    
+    .appointment-actions button {
+      width: 100%;
+    }
+  }
