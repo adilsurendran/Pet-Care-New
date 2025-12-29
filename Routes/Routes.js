@@ -1,5 +1,5 @@
 import express from 'express';
-import { acceptBooking, acceptOrderBooking, addGameAccount, addGuide, AddtoCart, bookDoctor, bookProduct, createOrGetChat, deleteDoctor, deleteGuide, deleteProduct, DeleteUser, doctorRegistration, editProduct, getAllBuyers, getAlldoct, getAllProducts, getAllShops, getAllUsers, getChatList, getDocBooking, getMessages, login, refillMoney, RejectBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateDoctor, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
+import { acceptBooking, acceptOrderBooking, addGameAccount, addGuide, AddtoCart, bookDoctor, bookProduct, createOrGetChat, deleteDoctor, deleteGuide, deleteProduct, DeleteUser, doctorRegistration, editProduct, getAllBuyers, getAlldoct, getAllProducts, getAllShops, getAllUsers, getChatList, getDocBooking, getDoctorChatList, getMessages, login, refillMoney, RejectBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateDoctor, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
 import upload from '../middleware/upload.js'; 
 
 
@@ -56,8 +56,16 @@ route.put("/product/toggle-availability/:productId", toggleProductAvailability);
 // routes/chatRoutes.js
 route.post("/chat", createOrGetChat);
 route.get("/chat/list/:userId", getChatList);
+
+// sharing for user and doctor 
 route.get("/chat/messages/:chatId", getMessages);
 route.post("/chat/message", sendMessage);
+
+// Doctor inbox
+route.get(
+  "/chat/doctor/list/:doctorLoginId",
+  getDoctorChatList
+);
 
 
 export default route;

@@ -50,7 +50,7 @@ export const userRegistration = async (req, res) => {
             verify: true
 });
 
-        await userData.create({
+       const Newuser = await userData.create({
             commonKey: login._id,
             userFullname,
             userEmail,
@@ -1592,3 +1592,40 @@ export const sendMessage = async (req, res) => {
     });
   }
 };
+
+export const getDoctorChatList = async (req, res) => {
+  try {
+    const { doctorLoginId } = req.params;
+
+    if (!doctorLoginId) {
+      return res.status(400).json({
+        success: false,
+        message: "doctorLoginId is required",
+      });
+    }
+
+    // Convert loginId → doctorId
+    const doctor = await doctData.findOne({ commonkey: doctorLoginId });
+
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found",
+      });
+    }
+
+    const chats = await Chat.find({ doctorId: doctor._id })
+      .populate("userId", "userFullname userEmail") // adjust fields if needed
+      .sort({ updatedAt: -1 });
+
+    return res.status(200).json(chats);
+  } catch (error) {
+    console.error("getDoctorChatList error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+

@@ -39,6 +39,7 @@ import SendComplaint from './Components/User/SendComplaint';
 import Services from './Components/Service';
 import CartPage from './Components/User/CartPage';
 import ChatPage from './Components/User/ChatPage';
+import DoctorChatPage from './Components/Doctor/DoctorChatPage';
 
 
 
@@ -83,6 +84,8 @@ function App() {
 
         <Route path="/user/chat" element={<ChatPage />} />
 <Route path="/user/chat/:doctorLoginId" element={<ChatPage />} />
+
+<Route path='/doctor/chat' element={<DoctorChatPage/>}></Route>
 
         
         

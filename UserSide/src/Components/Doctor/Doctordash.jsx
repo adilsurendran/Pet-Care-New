@@ -64,7 +64,10 @@ const DoctorDash = () => {
             <i className="fas fa-users"></i>
             <span>Suggestions</span>
           </Link>
-
+            <Link to="/doctor/chat" className="nav-item">
+            <i className="fas fa-users"></i>
+            <span>Chats</span>
+          </Link>
           <div className="nav-item" onClick={handleLogout}>
             <i className="fas fa-users"></i>
             <span>Logout</span>
