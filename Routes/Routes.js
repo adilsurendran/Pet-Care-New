@@ -1,5 +1,5 @@
 import express from 'express';
-import { acceptBooking, acceptOrderBooking, addGameAccount, addGuide, AddtoCart, bookDoctor, bookProduct, createOrGetChat, deleteDoctor, deleteGuide, deleteProduct, DeleteUser, doctorRegistration, editProduct, getAllBuyers, getAlldoct, getAllProducts, getAllShops, getAllUsers, getChatList, getDocBooking, getDoctorChatList, getMessages, login, refillMoney, RejectBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateDoctor, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
+import { acceptBooking, acceptOrderBooking, addGameAccount, addGuide, AddtoCart, bookDoctor, bookProduct, createOrGetChat, deleteDoctor, deleteGuide, deleteProduct, DeleteUser, doctorRegistration, editProduct, getAllBuyers, getAlldoct, getAllProducts, getAllShops, getAllUsers, getChatList, getDocBooking, getDoctorChatList, getMessages, login, refillMoney, RejectBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateCartQuantity, updateDoctor, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
 import upload from '../middleware/upload.js'; 
 
 
@@ -34,6 +34,7 @@ route.post('/bookpro/:userId',bookProduct)
 route.get('/orderbyuser', viewOrdersByProductOwner)
 route.post('/acceptorder/:bookingId', acceptOrderBooking)
 route.post('/add-to-cart/:id', AddtoCart)
+route.put('/cart/update-quantity/:userId/:productId',updateCartQuantity)
 route.get('/getbuyers', getAllBuyers)
 route.put('/editProduct/:productId',upload.fields([{ name: "screenshots", maxCount: 100 }]), editProduct)
 route.get('/viewProduct/:productId', viewProductById)

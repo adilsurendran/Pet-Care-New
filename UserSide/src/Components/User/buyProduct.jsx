@@ -10,6 +10,9 @@ const BuyPro = () => {
   const [products, setProducts] = useState([]); // State to store products
   const [loading, setLoading] = useState(true); // State to track loading
   const [userId, setUserId] = useState(null); // State to store userId
+  const [quantities, setQuantities] = useState({});
+
+
   const navigate = useNavigate();
 
   // Fetch products from the API
@@ -17,7 +20,15 @@ const BuyPro = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get('http://localhost:5000/api/allpro');
+        // console.log(response,"seller idddddddddddddd???????????????????");
+        
         setProducts(response.data.products); // Set the products in state
+        const initialQuantities = {};
+response.data.products.forEach(p => {
+  initialQuantities[p._id] = 1;
+});
+setQuantities(initialQuantities);
+
         setLoading(false); // Set loading to false once the data is fetched
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -28,13 +39,28 @@ const BuyPro = () => {
     fetchProducts();
 
     // Retrieve userId from localStorage
-    const storedUserId = localStorage.getItem('userId');
+    const storedUserId = localStorage.getItem('user');
     setUserId(storedUserId); // Set the userId state from localStorage
   }, []);
 
+  const increaseQty = (id) => {
+  setQuantities(prev => ({
+    ...prev,
+    [id]: prev[id] + 1
+  }));
+};
+
+const decreaseQty = (id) => {
+  setQuantities(prev => ({
+    ...prev,
+    [id]: Math.max(1, prev[id] - 1)
+  }));
+};
+
+
   const addToCart = async (product) => {
     try {
-        const userId = localStorage.getItem("userId"); // Get userId from localStorage
+        const userId = localStorage.getItem("user"); // Get userId from localStorage
         if (!userId) {
             alert('Please log in first');
             return;
@@ -42,7 +68,7 @@ const BuyPro = () => {
 
         const response = await axios.post(
             `http://localhost:5000/api/add-to-cart/${userId}`,
-            { productId: product._id }, // Ensure this matches backend schema
+            { productId: product._id,quantity: quantities[product._id] || 1    }, // Ensure this matches backend schema
             { headers: { 'Content-Type': 'application/json' } } // Fix possible format issues
         );
 
@@ -63,6 +89,7 @@ const BuyPro = () => {
 
 
 
+//  console.log(products);
   
 
   const bookProduct = async (product) => {
@@ -74,6 +101,8 @@ const BuyPro = () => {
     try {
       const response = await axios.post(`http://localhost:5000/api/bookpro/${userId}`, {
         productId: product._id, // Send the product ID in the body
+        sellerLoginId: product.userId,
+        quantity: quantities[product._id] || 1 
       });
 
       // Ensure to check for success status in the response
@@ -115,6 +144,12 @@ const BuyPro = () => {
               <h2>{product.ProductName}</h2>
               <p>{product.description}</p>
               <div className="price">${product.price}</div>
+              <div className="quantity-control">
+  <button onClick={() => decreaseQty(product._id)}>-</button>
+  <span>{quantities[product._id] || 1}</span>
+  <button onClick={() => increaseQty(product._id)}>+</button>
+</div>
+          
               <div className="product-actions">
                 <button
                   className="add-to-cart"

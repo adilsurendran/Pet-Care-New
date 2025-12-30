@@ -139,3 +139,23 @@
   .cart-button:hover {
     background-color: #cc5500;
   }
+
+  .quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.quantity-control button {
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.quantity-control span {
+  min-width: 20px;
+  text-align: center;
+  font-weight: bold;
+}

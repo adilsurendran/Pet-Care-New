@@ -871,36 +871,188 @@ export const getAllProducts = async (req, res) => {
         }
 
 // function to book product by user
+// export const bookProduct = async (req, res) => {
+//     // try {
+//       const { productId,sellerLoginId } = req.body;
+//       const userId = req.params.userId;
+//       // console.log("productId",productId,"sellerLoginId",sellerLoginId,"userId",userId);
+
+      
+  
+//     //   if (!userId || !productId) {
+//     //     return res.status(400).json({ message: "User ID, Product ID, and quantity are required" });
+//     //   }
+  
+//     //   const product = await Product.findById(productId);
+//     //   if (!product) {
+//     //     return res.status(404).json({ message: "Product not found" });
+//     //   }
+  
+//     //   // Create order
+//     //   const newOrder = new Order({
+//     //     userId,
+//     //     productId,
+//     //     status: "Pending",
+//     //   });
+  
+//     //   await newOrder.save();
+  
+//     //   // Send success response with a success flag
+//     //   return res.status(201).json({ success: true, message: "Product booked successfully", order: newOrder });
+//     // } catch (error) {
+//     //   console.error("Error booking product:", error);
+//     //   return res.status(500).json({ success: false, message: "Internal Server Error" });
+//     // }
+//   };
+
+// export const bookProduct = async (req, res) => {
+//   try {
+//     const userId = req.params.userId;
+//     const { productId, quantity } = req.body;
+
+//     if (!productId || !quantity) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Product ID and quantity are required",
+//       });
+//     }
+
+//     const product = await Product.findById(productId);
+
+//     if (!product) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Product not found",
+//       });
+//     }
+
+//     // 🔴 STOCK CHECK
+//     if (product.quantity < quantity) {
+//       return res.status(400).json({
+//         success: false,
+//         message: `Only ${product.quantity} item(s) available`,
+//       });
+//     }
+
+//     // ✅ DECREASE STOCK
+//     product.quantity -= quantity;
+
+//     // 🔴 IF ZERO → NOT AVAILABLE
+//     if (product.quantity === 0) {
+//       product.available = false;
+//     }
+
+//     await product.save();
+
+//     // ✅ CREATE ORDER
+//     const newOrder = new Order({
+//       userId,
+//       productId,
+//       quantity,
+//       price: product.price,
+//       status: "Pending",
+//     });
+
+//     await newOrder.save();
+
+//     // ✅ OPTIONAL: REMOVE FROM CART
+//     await Cart.updateOne(
+//       { userId },
+//       { $pull: { items: { productId } } }
+//     );
+
+//     return res.status(201).json({
+//       success: true,
+//       message: "Product booked successfully",
+//       order: newOrder,
+//     });
+
+//   } catch (error) {
+//     console.error("Book Product Error:", error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error",
+//     });
+//   }
+// };
+
 export const bookProduct = async (req, res) => {
-    try {
-      const { productId } = req.body;
-      const userId = req.params.userId;
-  
-      if (!userId || !productId) {
-        return res.status(400).json({ message: "User ID, Product ID, and quantity are required" });
-      }
-  
-      const product = await Product.findById(productId);
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
-      }
-  
-      // Create order
-      const newOrder = new Order({
-        userId,
-        productId,
-        status: "Pending",
+  try {
+    const userId = req.params.userId;
+    const { productId, quantity } = req.body;
+
+    // 🔴 VALIDATION
+    if (!userId || !productId || !quantity) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID, Product ID and quantity are required",
       });
-  
-      await newOrder.save();
-  
-      // Send success response with a success flag
-      return res.status(201).json({ success: true, message: "Product booked successfully", order: newOrder });
-    } catch (error) {
-      console.error("Error booking product:", error);
-      return res.status(500).json({ success: false, message: "Internal Server Error" });
     }
-  };
+
+    // 🔎 FIND PRODUCT
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // 🔎 GET SELLER ID FROM PRODUCT
+    const sellerId = product.userId;
+
+    // 🔴 STOCK CHECK
+    if (product.quantity < quantity) {
+      return res.status(400).json({
+        success: false,
+        message: `Only ${product.quantity} item(s) available`,
+      });
+    }
+
+    // ✅ DECREASE PRODUCT QUANTITY
+    product.quantity -= quantity;
+
+    // ❌ OUT OF STOCK
+    if (product.quantity === 0) {
+      product.available = false;
+    }
+
+    await product.save();
+
+    // ✅ CREATE ORDER
+    const newOrder = new Order({
+      userId,
+      productId,
+      sellerId,
+      status: "Pending",
+      quantity
+    });
+
+    await newOrder.save();
+
+    // ✅ REMOVE ITEM FROM CART
+    await Cart.updateOne(
+      { userId },
+      { $pull: { items: { productId } } }
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: "Product booked successfully",
+      order: newOrder,
+    });
+
+  } catch (error) {
+    console.error("Book Product Error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+
   
   
 
@@ -1031,56 +1183,124 @@ export const RejectOrderBooking = async (req, res) => {
 };
 
 
+// export const AddtoCart = async (req, res) => {
+//     const userId = req.params.id; // Get user ID from URL
+//     const { productId,quantity } = req.body; // Get productId from request body
+
+//     console.log(userId,productId);
+    
+
+//     if (!userId || !productId) {
+//       return res.status(400).json({ error: 'User ID and Product ID are required' });
+//     }
+
+//     try {
+//       const user = await userData.findById(userId);
+//       if (!user) {
+//         return res.status(404).json({ error: 'User not found' });
+//       }
+
+//       // if (user.role !== 'buyer') {
+//       //   return res.status(403).json({ error: 'Only buyers can add items to the cart' });
+//       // }
+
+//       const product = await Product.findById(productId);
+//       if (!product) {
+//         return res.status(404).json({ error: 'Product not found' });
+//       }
+
+//       let cart = await Cart.findOne({ userId });
+
+//       if (!cart) {
+//         cart = new Cart({ userId, items: [{ productId }],quantity });
+//       } else {
+//         const existingItem = cart.items.find((item) => item.productId.toString() === productId.toString());
+
+//         if (!existingItem) {
+//           cart.items.push({ productId });
+//         }
+//       }
+
+//       await cart.save();
+//       return res.status(200).json({ success: true, message: 'Item added to cart successfully', cart });
+
+//     } catch (error) {
+//       console.error('Error in AddtoCart:', error);
+//       return res.status(500).json({ error: 'Internal Server Error' });
+//     }
+// };
+
 export const AddtoCart = async (req, res) => {
-    const userId = req.params.id; // Get user ID from URL
-    const { productId } = req.body; // Get productId from request body
+  const userId = req.params.id;
+  const { productId, quantity } = req.body;
 
-    if (!userId || !productId) {
-      return res.status(400).json({ error: 'User ID and Product ID are required' });
-    }
+  try {
+    let cart = await Cart.findOne({ userId });
 
-    try {
-      const user = await loginData.findById(userId);
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
+    if (!cart) {
+      cart = new Cart({
+        userId,
+        items: [{ productId, quantity }],
+      });
+    } else {
+      const existingItem = cart.items.find(
+        item => item.productId.toString() === productId
+      );
 
-      if (user.role !== 'buyer') {
-        return res.status(403).json({ error: 'Only buyers can add items to the cart' });
-      }
-
-      const product = await Product.findById(productId);
-      if (!product) {
-        return res.status(404).json({ error: 'Product not found' });
-      }
-
-      let cart = await Cart.findOne({ userId });
-
-      if (!cart) {
-        cart = new Cart({ userId, items: [{ productId }] });
+      if (existingItem) {
+        // ✅ UPDATE quantity if already exists
+        existingItem.quantity += quantity;
       } else {
-        const existingItem = cart.items.find((item) => item.productId.toString() === productId.toString());
-
-        if (!existingItem) {
-          cart.items.push({ productId });
-        }
+        cart.items.push({ productId, quantity });
       }
-
-      await cart.save();
-      return res.status(200).json({ success: true, message: 'Item added to cart successfully', cart });
-
-    } catch (error) {
-      console.error('Error in AddtoCart:', error);
-      return res.status(500).json({ error: 'Internal Server Error' });
     }
+
+    await cart.save();
+    res.json({ success: true, cart });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
+
+export const updateCartQuantity = async (req, res) => {
+  const { userId, productId } = req.params;
+  const { quantity } = req.body;
+
+  if (quantity < 1) {
+    return res.status(400).json({ error: "Quantity must be at least 1" });
+  }
+
+  try {
+    const cart = await Cart.findOne({ userId });
+
+    const item = cart.items.find(
+      i => i.productId.toString() === productId
+    );
+
+    if (!item) {
+      return res.status(404).json({ error: "Item not found in cart" });
+    }
+
+    item.quantity = quantity;
+    await cart.save();
+
+    res.json({ success: true, cart });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 export const ViewCart = async (req, res) => {
     try {
         const userId = req.params.id; // Get user ID from URL params
 
         // Check if user exists
-        const user = await loginData.findById(userId);
+        const user = await userData.findById(userId);
         if (!user) {
             return res.status(404).json({ error: "User not found" });
         }

@@ -13,6 +13,11 @@ const CartSchema = new mongoose.Schema({
         ref: 'Products',
         required: true,
       },
+      quantity: {
+        type: Number,
+        default: 1,
+        min: 1,
+      }
     },
   ],
   createdAt: {
@@ -24,6 +29,7 @@ const CartSchema = new mongoose.Schema({
     default: Date.now,
   },
 });
+
 
 CartSchema.pre('save', function (next) {
   this.updatedAt = Date.now();

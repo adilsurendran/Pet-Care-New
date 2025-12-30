@@ -8,7 +8,7 @@ import BuyerFooter from "./BuyerFooter";
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const userId = localStorage.getItem("userId");
+  const userId = localStorage.getItem("user");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,6 +21,8 @@ const CartPage = () => {
     const fetchCartItems = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/api/viewcart/${userId}`);
+        console.log(response);
+        
         if (response.data.success) {
           setCartItems(response.data.cart.items || []);
         } else {
@@ -47,9 +49,33 @@ const CartPage = () => {
     }
   };
 
-  const bookProduct = async (productId) => {
+  const updateQuantity = async (productId, newQty) => {
+  if (newQty < 1) return;
+
+  try {
+    await axios.put(
+      `http://localhost:5000/api/cart/update-quantity/${userId}/${productId}`,
+      { quantity: newQty }
+    );
+
+    setCartItems(prev =>
+      prev.map(item =>
+        item.productId._id === productId
+          ? { ...item, quantity: newQty }
+          : item
+      )
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
+  const bookProduct = async (item) => {
+    // console.log(item);
+    
     try {
-      const response = await axios.post(`http://localhost:5000/api/bookpro/${userId}`, { productId });
+      const response = await axios.post(`http://localhost:5000/api/bookpro/${userId}`, { productId: item.productId._id,sellerLoginId: item.userId,quantity: item.quantity   });
       if (response.data.success) {
         alert("Product booked successfully!");
         navigate("/buyer-dash");
@@ -81,10 +107,18 @@ const CartPage = () => {
                 <div className="cart-info">
                   <h2>{item.productId.ProductName}</h2>
                   <p>{item.productId.description}</p>
-                  <div className="price">${item.productId.price}</div>
+                  <div className="price">Price : ${item.productId.price}</div>
+                  <div>Qty:{item.quantity}</div>
+                  <div className="quantity-control">
+  <button onClick={() => updateQuantity(item.productId._id, item.quantity - 1)}>-</button>
+  <span>{item.quantity}</span>
+  <button onClick={() => updateQuantity(item.productId._id, item.quantity + 1)}>+</button>
+</div>
+                  <div className="price">Total : ${item.productId.price * item.quantity}</div>
+
                   <div className="cart-buttons">
                     <button className="remove-button" onClick={() => removeFromCart(item.productId._id)}>Cancel</button>
-                    <button className="book-now" onClick={() => bookProduct(item.productId._id)} style={{ marginLeft: "10px" }}>Book Now</button>
+                    <button className="book-now" onClick={() => bookProduct(item)} style={{ marginLeft: "10px" }}>Book Now</button>
                   </div>
                 </div>
               </div>

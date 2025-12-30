@@ -42,7 +42,7 @@ const Login = () => {
           navigate("/admindash");
         } else if (role === "user") {
           localStorage.setItem("user",response.data.data.userDetails._id)
-          console.log("Navigating to buyer home...");
+          console.log("Navigating to user home...");
           navigate("/buyer-dash");
         } else if (role === "shop") {
           console.log("Navigating to shop home...");
