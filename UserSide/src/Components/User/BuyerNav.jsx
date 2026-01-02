@@ -31,7 +31,7 @@ const BuyerNav = () => {
     </button>
     <div className="collapse navbar-collapse" id="navbarCollapse">
       <div className="navbar-nav ms-auto py-0">
-        <Link to={'/buyer-dash'} className="nav-item nav-link active">
+        <Link to={'/buyer-dash'} className="nav-item nav-link">
           Home
         </Link>
         <Link to={'/viewguide'} className="nav-item nav-link">
@@ -45,6 +45,15 @@ const BuyerNav = () => {
         </Link>
         <Link to={'/complaint'} className="nav-item nav-link">
           Complaint
+        </Link>
+        <Link to={'/pet-profile'} className="nav-item nav-link">
+          Pet-Profile
+        </Link>
+        <Link to={'/profile'} className="nav-item nav-link">
+          Profile
+        </Link>
+        <Link to={'/pestmarketplace'} className="nav-item nav-link">
+          Pets
         </Link>
 
         <a

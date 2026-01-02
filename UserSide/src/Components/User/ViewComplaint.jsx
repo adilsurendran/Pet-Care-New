@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import "../Admin/ViewComplaints.css";
 import BuyerNav from "./BuyerNav";
+import { useNavigate } from "react-router-dom";
 
 const ViewComp = () => {
   const [username, setUsername] = useState("");
@@ -12,6 +13,8 @@ const ViewComp = () => {
 
   // Retrieve the logged-in user's ID from local storage
   const userId = localStorage.getItem("userId");
+
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchComplaints = async () => {
@@ -96,6 +99,7 @@ const ViewComp = () => {
         </>
       )}
     </motion.div>
+    <button className="btn btn-success" style={{position:"fixed", bottom:"30px", right:"55px", fontSize:"30px", padding:"15px 30px", borderRadius:"10px" , fontWeight:"900"}} onClick={()=>navigate('/sendcomplaint')}>+</button>
     </div>
   );
 };

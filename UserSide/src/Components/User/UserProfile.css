@@ -1,0 +1,50 @@
+.user-profile-page {
+  padding: 40px;
+  background: #f4fff9;
+  min-height: 100vh;
+}
+
+.profile-card {
+  max-width: 500px;
+  margin: auto;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.profile-row span {
+  color: #777;
+}
+
+.edit-btn {
+  margin-top: 20px;
+  background: #2ecc71;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 16px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.profile-modal {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  width: 400px;
+}
+
+.profile-modal input {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}

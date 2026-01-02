@@ -40,6 +40,9 @@ import Services from './Components/Service';
 import CartPage from './Components/User/CartPage';
 import ChatPage from './Components/User/ChatPage';
 import DoctorChatPage from './Components/Doctor/DoctorChatPage';
+import PetProfile from './Components/User/PetProfile';
+import UserProfile from './Components/User/UserProfile';
+import PetMarketplace from './Components/User/PetMarketplace';
 
 
 
@@ -86,6 +89,10 @@ function App() {
 <Route path="/user/chat/:doctorLoginId" element={<ChatPage />} />
 
 <Route path='/doctor/chat' element={<DoctorChatPage/>}></Route>
+        <Route path='/pet-profile' element={<PetProfile />} />
+        <Route path='/profile' element={<UserProfile />} />
+        <Route path='/pestmarketplace' element={<PetMarketplace />} />
+
 
         
         

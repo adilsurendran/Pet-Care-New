@@ -1,5 +1,5 @@
 import express from 'express';
-import { acceptBooking, acceptOrderBooking, addGameAccount, addGuide, AddtoCart, bookDoctor, bookProduct, createOrGetChat, deleteDoctor, deleteGuide, deleteProduct, DeleteUser, doctorRegistration, editProduct, getAllBuyers, getAlldoct, getAllProducts, getAllShops, getAllUsers, getChatList, getDocBooking, getDoctorChatList, getMessages, login, refillMoney, RejectBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateCartQuantity, updateDoctor, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
+import { acceptBooking, acceptOrderBooking, addGameAccount, addGuide, addPet, AddtoCart, bookDoctor, bookProduct, cancelOrderBooking, createOrGetChat, deleteDoctor, deleteGuide, deletePet, deleteProduct, DeleteUser, deliverOrderBooking, doctorRegistration, editProduct, getAllBuyers, getAlldoct, getAllProducts, getAllShops, getAllUsers, getChatList, getDocBooking, getDoctorChatList, getMessages, getOrdersByUser, getPetById, getUserPets, getUserProfile, login, refillMoney, RejectBooking, RejectOrderBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateCartQuantity, updateDoctor, updatePet, updateUserProfile, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
 import upload from '../middleware/upload.js'; 
 
 
@@ -31,8 +31,12 @@ route.get('/getpro/:userId', viewProductsByUserId)
 route.delete('/deletepro/:productId', deleteProduct)
 route.get('/allpro', getAllProducts)
 route.post('/bookpro/:userId',bookProduct)
-route.get('/orderbyuser', viewOrdersByProductOwner)
+route.get('/orderbyuser/:userId', viewOrdersByProductOwner)
 route.post('/acceptorder/:bookingId', acceptOrderBooking)
+route.post('/orderaction/:bookingId',RejectOrderBooking )
+route.post("/deliverorder/:bookingId", deliverOrderBooking);
+route.get("/ordersbyuser/:userId", getOrdersByUser);
+route.post("/cancelorder/:bookingId", cancelOrderBooking);
 route.post('/add-to-cart/:id', AddtoCart)
 route.put('/cart/update-quantity/:userId/:productId',updateCartQuantity)
 route.get('/getbuyers', getAllBuyers)
@@ -67,6 +71,15 @@ route.get(
   "/chat/doctor/list/:doctorLoginId",
   getDoctorChatList
 );
+
+route.post("/pets/add/:ownerId", addPet);
+route.get("/pets/user/:ownerId", getUserPets);
+route.get("/pets/:petId", getPetById);
+route.put("/pets/:petId", updatePet);
+route.delete("/pets/:petId", deletePet);
+
+route.get("/users/profile/:userId", getUserProfile);
+route.put("/users/profile/:userId", updateUserProfile);
 
 
 export default route;

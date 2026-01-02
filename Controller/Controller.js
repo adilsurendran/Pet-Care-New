@@ -492,6 +492,7 @@ import Order from '../Model/ProductOrder.js';
 import Cart from '../Model/AddToCart.js';
 import Chat from '../Model/Chat.js';
 import Message from '../Model/Message.js';
+import Pet from '../Model/Pet.js';
 
 export const getDocBooking = async (req, res) => {
     try {
@@ -1025,7 +1026,7 @@ export const bookProduct = async (req, res) => {
       userId,
       productId,
       sellerId,
-      status: "Pending",
+      status: "pending",
       quantity
     });
 
@@ -1060,17 +1061,14 @@ export const bookProduct = async (req, res) => {
 
 
 export const viewOrdersByProductOwner = async (req, res) => {
+  const {userId} = req.params
+  console.log(userId);
+  
     try {
         // Fetch all orders and populate userId to get the username
-        const orders = await Order.find({})
-            .populate({
-                path: "userId",
-                select: "username" // Fetch only the username from the Login model
-            })
-            .populate({
-                path: "productId",
-                select: "ProductName" // Optional: Fetch product name as well
-            });
+        const orders = await Order.find({sellerId:userId})
+            .populate("userId","userFullname city pincode")
+            .populate("productId", "ProductName price");
 
         if (orders.length === 0) {
             return res.status(404).json({ message: "No orders found" });
@@ -1108,9 +1106,9 @@ export const acceptOrderBooking = async (req, res) => {
         const { bookingId } = req.params; // Get booking ID from request params
 
         // Validate if bookingId is a valid MongoDB ObjectId
-        if (!mongoose.Types.ObjectId.isValid(bookingId)) {
-            return res.status(400).json({ success: false, message: "Invalid booking ID format." });
-        }
+        // if (!mongoose.Types.ObjectId.isValid(bookingId)) {
+        //     return res.status(400).json({ success: false, message: "Invalid booking ID format." });
+        // }
 
         // Find the booking first
         const booking = await Order.findById(bookingId);
@@ -1120,14 +1118,14 @@ export const acceptOrderBooking = async (req, res) => {
         }
 
         // If the booking is already confirmed, inform the user
-        if (booking.status === "Confirmed") {
+        if (booking.status === "confirmed") {
             return res.status(400).json({ success: false, message: "Booking has already been confirmed." });
         }
 
         // Update the booking status to "Confirmed"
         const updatedBooking = await Order.findByIdAndUpdate(
             bookingId,
-            { status: "Confirmed" },
+            { status: "confirmed" },
             { new: true } // Return the updated document
         );
 
@@ -1143,44 +1141,42 @@ export const acceptOrderBooking = async (req, res) => {
 };
 
 
-export const RejectOrderBooking = async (req, res) => {
-    try {
-        const { bookingId } = req.params; // Get booking ID from request params
+// export const RejectOrderBooking = async (req, res) => {
+//     try {
+//         const { bookingId } = req.params; // Get booking ID from request params
 
-        // Validate if bookingId is a valid MongoDB ObjectId
-        if (!mongoose.Types.ObjectId.isValid(bookingId)) {
-            return res.status(400).json({ success: false, message: "Invalid booking ID format." });
-        }
+//         // Validate if bookingId is a valid MongoDB ObjectId
 
-        // Find the booking first
-        const booking = await Order.findById(bookingId);
 
-        if (!booking) {
-            return res.status(404).json({ success: false, message: "Booking not found." });
-        }
+//         // Find the booking first
+//         const booking = await Order.findById(bookingId);
 
-        // If the booking is already confirmed, inform the user
-        if (booking.status === "Rejected") {
-            return res.status(400).json({ success: false, message: "Booking has already been confirmed." });
-        }
+//         if (!booking) {
+//             return res.status(404).json({ success: false, message: "Booking not found." });
+//         }
 
-        // Update the booking status to "Confirmed"
-        const updatedBooking = await Order.findByIdAndUpdate(
-            bookingId,
-            { status: "Rejected" },
-            { new: true } // Return the updated document
-        );
+//         // If the booking is already confirmed, inform the user
+//         if (booking.status === "Rejected") {
+//             return res.status(400).json({ success: false, message: "Booking has already been confirmed." });
+//         }
 
-        res.status(200).json({
-            success: true,
-            message: "Booking accepted successfully!",
-            booking: updatedBooking
-        });
-    } catch (error) {
-        console.error("Error accepting booking:", error);
-        res.status(500).json({ success: false, message: "Internal Server Error" });
-    }
-};
+//         // Update the booking status to "Confirmed"
+//         const updatedBooking = await Order.findByIdAndUpdate(
+//             bookingId,
+//             { status: "Rejected" },
+//             { new: true } // Return the updated document
+//         );
+
+//         res.status(200).json({
+//             success: true,
+//             message: "Booking accepted successfully!",
+//             booking: updatedBooking
+//         });
+//     } catch (error) {
+//         console.error("Error accepting booking:", error);
+//         res.status(500).json({ success: false, message: "Internal Server Error" });
+//     }
+// };
 
 
 // export const AddtoCart = async (req, res) => {
@@ -1229,6 +1225,246 @@ export const RejectOrderBooking = async (req, res) => {
 //       return res.status(500).json({ error: 'Internal Server Error' });
 //     }
 // };
+export const RejectOrderBooking = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+
+
+
+    // 2️⃣ Find booking
+    const booking = await Order.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found",
+      });
+    }
+
+    // 3️⃣ Prevent double reject
+    if (booking.status === "rejected") {
+      return res.status(400).json({
+        success: false,
+        message: "Booking already rejected",
+      });
+    }
+
+    // 4️⃣ Find product
+    const product = await Product.findById(booking.productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // 5️⃣ Add quantity back to product
+    product.quantity += booking.quantity;
+
+    // Optional: mark available if quantity > 0
+    if (product.quantity > 0) {
+      product.available = true;
+    }
+
+    await product.save();
+
+    // 6️⃣ Update booking status
+    booking.status = "rejected";
+    await booking.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Booking rejected and quantity restored successfully",
+      booking,
+      product,
+    });
+
+  } catch (error) {
+    console.error("Error rejecting booking:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const deliverOrderBooking = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+
+    // 1️⃣ Find the booking
+    const booking = await Order.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found.",
+      });
+    }
+
+    // 2️⃣ Only confirmed orders can be delivered
+    if (booking.status !== "confirmed") {
+      return res.status(400).json({
+        success: false,
+        message: "Only confirmed orders can be delivered.",
+      });
+    }
+
+    // 3️⃣ Update status → delivered
+    const updatedBooking = await Order.findByIdAndUpdate(
+      bookingId,
+      { status: "delivered" },
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Order delivered successfully!",
+      order: updatedBooking,
+    });
+  } catch (error) {
+    console.error("Error delivering booking:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const getOrdersByUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // 1️⃣ Find orders for this user
+    const orders = await Order.find({ userId })
+      .populate({
+        path: "productId",
+        select: "ProductName price screenshots",
+      })
+      .sort({ createdAt: -1 }); // latest first
+
+    // 2️⃣ Return response
+    res.status(200).json({
+      success: true,
+      message: "Orders retrieved successfully",
+      orders,
+    });
+  } catch (error) {
+    console.error("Error fetching user orders:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+
+// export const cancelOrderBooking = async (req, res) => {
+//   try {
+//     const { bookingId } = req.params;
+
+//     // 1️⃣ Find the booking
+//     const booking = await Order.findById(bookingId);
+
+//     if (!booking) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Booking not found.",
+//       });
+//     }
+
+//     // 2️⃣ Only pending or confirmed orders can be cancelled
+//     if (!["pending", "confirmed"].includes(booking.status)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: `Order cannot be cancelled once it is ${booking.status}.`,
+//       });
+//     }
+
+//     // 3️⃣ Update status → cancelled
+//     const updatedBooking = await Order.findByIdAndUpdate(
+//       bookingId,
+//       { status: "cancelled" },
+//       { new: true }
+//     );
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Order cancelled successfully!",
+//       order: updatedBooking,
+//     });
+//   } catch (error) {
+//     console.error("Error cancelling booking:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal Server Error",
+//     });
+//   }
+// };
+
+export const cancelOrderBooking = async (req, res) => {
+  try {
+    const { bookingId } = req.params;
+
+    // 1️⃣ Find booking
+    const booking = await Order.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({
+        success: false,
+        message: "Booking not found.",
+      });
+    }
+
+    // 2️⃣ Allow cancel only for pending / confirmed
+    if (!["pending", "confirmed"].includes(booking.status)) {
+      return res.status(400).json({
+        success: false,
+        message: `Order cannot be cancelled once it is ${booking.status}.`,
+      });
+    }
+
+    // 3️⃣ Find product
+    const product = await Product.findById(booking.productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found.",
+      });
+    }
+
+    // 4️⃣ Restore product quantity
+    product.quantity += booking.quantity;
+
+    // Optional safety
+    if (product.quantity > 0) {
+      product.available = true;
+    }
+
+    await product.save();
+
+    // 5️⃣ Update booking status → cancelled
+    booking.status = "cancelled";
+    await booking.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Order cancelled and quantity restored successfully!",
+      booking,
+      product,
+    });
+  } catch (error) {
+    console.error("Error cancelling booking:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+
 
 export const AddtoCart = async (req, res) => {
   const userId = req.params.id;
@@ -1849,3 +2085,185 @@ export const getDoctorChatList = async (req, res) => {
 };
 
 
+
+
+/**
+ * ADD PET
+ * Matches frontend addPet() form
+ */
+export const addPet = async (req, res) => {
+  try {
+    const { ownerId } = req.params;
+    const {
+      name,
+      breed,
+      purchaseDate,
+      ageYears,
+      ageMonths,
+      sex,
+      lastVaccination,
+      weight
+    } = req.body;
+
+    if (!name || !breed || !sex) {
+      return res.status(400).json({
+        message: "Name, breed and sex are required"
+      });
+    }
+
+    const pet = await Pet.create({
+      ownerId,
+      name,
+      breed,
+      purchaseDate,
+      ageYears,
+      ageMonths,
+      sex,
+      lastVaccination,
+      weight
+    });
+
+    res.status(201).json({
+      message: "Pet added successfully",
+      pet
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to add pet",
+      error: error.message
+    });
+  }
+};
+
+/**
+ * GET ALL PETS OF A USER
+ */
+export const getUserPets = async (req, res) => {
+  try {
+    const { ownerId } = req.params;
+
+    const pets = await Pet.find({ ownerId }).sort({ createdAt: -1 });
+
+    res.json({
+      message: "Pets fetched successfully",
+      pets
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch pets",
+      error: error.message
+    });
+  }
+};
+
+/**
+ * GET SINGLE PET DETAILS
+ */
+export const getPetById = async (req, res) => {
+  try {
+    const pet = await Pet.findById(req.params.petId);
+
+    if (!pet) {
+      return res.status(404).json({ message: "Pet not found" });
+    }
+
+    res.json(pet);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch pet",
+      error: error.message
+    });
+  }
+};
+
+/**
+ * UPDATE PET
+ */
+export const updatePet = async (req, res) => {
+  try {
+    const pet = await Pet.findByIdAndUpdate(
+      req.params.petId,
+      req.body,
+      { new: true }
+    );
+
+    if (!pet) {
+      return res.status(404).json({ message: "Pet not found" });
+    }
+
+    res.json({
+      message: "Pet updated successfully",
+      pet
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to update pet",
+      error: error.message
+    });
+  }
+};
+
+/**
+ * DELETE PET
+ */
+export const deletePet = async (req, res) => {
+  try {
+    const pet = await Pet.findByIdAndDelete(req.params.petId);
+
+    if (!pet) {
+      return res.status(404).json({ message: "Pet not found" });
+    }
+
+    res.json({ message: "Pet removed successfully" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to delete pet",
+      error: error.message
+    });
+  }
+};
+
+
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await userData.findById(req.params.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to fetch profile",
+      error: error.message
+    });
+  }
+};
+
+/**
+ * UPDATE USER PROFILE
+ */
+export const updateUserProfile = async (req, res) => {
+  try {
+    const updatedUser = await userData.findByIdAndUpdate(
+      req.params.userId,
+      req.body,
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({
+      message: "Profile updated successfully",
+      user: updatedUser
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Failed to update profile",
+      error: error.message
+    });
+  }
+};

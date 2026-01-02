@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import axios from "axios";
 import "../Admin/ViewComplaints.css";
 
 const ViewOrders = () => {
-  const [orders, setOrders] = useState([]); // State for storing orders
-  const [showModal, setShowModal] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("all");
 
+  // =========================
+  // FETCH ORDERS
+  // =========================
   useEffect(() => {
     const fetchOrders = async () => {
-      const userId = localStorage.getItem("userId"); // Get the user ID from local storage
+      const userId = localStorage.getItem("userId");
 
       if (!userId) {
         alert("User ID not found in local storage.");
@@ -17,11 +19,12 @@ const ViewOrders = () => {
       }
 
       try {
-        // Make the API call using the userId
-        const response = await axios.get(`http://localhost:5000/api/orderbyuser`);
+        const response = await axios.get(
+          `http://localhost:5000/api/orderbyuser/${userId}`
+        );
 
         if (response.data.message === "Orders retrieved successfully") {
-          setOrders(response.data.orders); // Populate orders state
+          setOrders(response.data.orders || []);
         } else {
           alert("No orders found for this user.");
         }
@@ -32,80 +35,187 @@ const ViewOrders = () => {
     };
 
     fetchOrders();
-  }, []); // Empty dependency array means this will run once when the component is mounted
+  }, []);
 
+  // =========================
+  // HANDLE ACTIONS
+  // =========================
   const handleAction = async (orderId, action) => {
-    const userId = localStorage.getItem("userId"); // Get the user ID from local storage
-    if (!userId) {
-      alert("User ID not found in local storage.");
-      return;
-    }
-
     try {
       let response;
 
       if (action === "accept") {
-        // Call the API to accept the order
-        response = await axios.post(`http://localhost:5000/api/acceptorder/${orderId}`);
-      } else if (action === "reject") {
-        // Handle reject action if necessary
-        response = await axios.post(`http://localhost:5000/api/orderaction/${orderId}`, {
-          userId,
-          action,
-        });
+        response = await axios.post(
+          `http://localhost:5000/api/acceptorder/${orderId}`
+        );
       }
 
-      if (response.data.success) {
-        alert(`${action.charAt(0).toUpperCase() + action.slice(1)} action performed successfully!`);
+      if (action === "reject") {
+        response = await axios.post(
+          `http://localhost:5000/api/orderaction/${orderId}`,
+          { action }
+        );
+      }
 
-        // Update the orders list after action
-        setOrders((prevOrders) =>
-          prevOrders.filter((order) => order._id !== orderId) // Remove the order after action
+      if (action === "deliver") {
+        response = await axios.post(
+          `http://localhost:5000/api/deliverorder/${orderId}`
+        );
+      }
+
+      if (response?.data?.success) {
+        alert("Action performed successfully");
+
+        // ✅ SAFE UI UPDATE (NO undefined)
+        setOrders((prev) =>
+          prev.map((o) =>
+            o && o._id === orderId
+              ? {
+                  ...o,
+                  status:
+                    action === "accept"
+                      ? "confirmed"
+                      : action === "reject"
+                      ? "rejected"
+                      : action === "deliver"
+                      ? "delivered"
+                      : o.status,
+                }
+              : o
+          )
         );
       } else {
-        alert("Failed to perform action.");
+        alert("Failed to perform action");
       }
     } catch (error) {
-      console.error("Error performing action:", error);
-      alert("Error performing action. Please try again.");
+      console.error("Action error:", error);
+      alert("Something went wrong");
     }
   };
 
+  // =========================
+  // FILTER LOGIC (SAFE)
+  // =========================
+  const filteredOrders =
+    statusFilter === "all"
+      ? orders.filter(Boolean)
+      : orders.filter(
+          (order) => order && order.status === statusFilter
+        );
+
+  // =========================
+  // RENDER
+  // =========================
   return (
     <div className="orders-container">
       <h2 className="title">Orders</h2>
+
+      {/* STATUS FILTER */}
+      <div className="filter-bar">
+        <label>Filter by status:</label>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+        >
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="rejected">Rejected</option>
+          <option value="cancelled">Cancelled</option>
+          <option value="delivered">Delivered</option>
+        </select>
+      </div>
+
       <table className="orders-table">
         <thead>
           <tr>
-            <th>Username</th> {/* Change from Order ID to Username */}
-            <th>Product</th> {/* Change from Order ID to Product */}
+            <th>Name</th>
+            <th>Place</th>
+            <th>Pincode</th>
+            <th>Product</th>
+            <th>Unit price</th>
+            <th>Ordered Quantity</th>
             <th>Status</th>
             <th>Order Date</th>
             <th>Actions</th>
           </tr>
         </thead>
+
         <tbody>
-          {orders.length === 0 ? (
+          {filteredOrders.length === 0 ? (
             <tr>
-              <td colSpan="5">No orders available</td>
+              <td colSpan="9">No orders available</td>
             </tr>
           ) : (
-            orders.map((order) => (
-              <tr key={order._id}>
-                <td>{order.userId.username}</td> {/* Display username */}
-                <td>{order.productId.ProductName}</td> {/* Display product name */}
-                <td>{order.status}</td>
-                <td>{new Date(order.orderDate).toLocaleString()}</td> {/* Format date */}
-                <td>
-                  <button
-                    className="accept-btn"
-                    onClick={() => handleAction(order._id, "accept")}
-                  >
-                    Accept
-                  </button>
-                </td>
-              </tr>
-            ))
+            filteredOrders.map((order) => {
+              if (!order) return null;
+
+              return (
+                <tr key={order._id}>
+                  <td>{order.userId?.userFullname}</td>
+                  <td>{order.userId?.city}</td>
+                  <td>{order.userId?.pincode}</td>
+                  <td>{order.productId?.ProductName}</td>
+                  <td>{order.productId?.price}</td>
+                  <td>{order.quantity}</td>
+                  <td>{order.status}</td>
+                  <td>{new Date(order.createdAt).toLocaleString()}</td>
+
+                  {/* ACTION COLUMN */}
+                  <td>
+                    {order.status === "pending" && (
+                      <>
+                        <button
+                          className="accept-btn"
+                          onClick={() =>
+                            handleAction(order._id, "accept")
+                          }
+                        >
+                          Approve
+                        </button>
+                        <button
+                          className="btn btn-danger ms-2"
+                          onClick={() =>
+                            handleAction(order._id, "reject")
+                          }
+                        >
+                          Reject
+                        </button>
+                      </>
+                    )}
+
+                    {order.status === "confirmed" && (
+                      <button
+                        className="btn btn-success"
+                        onClick={() =>
+                          handleAction(order._id, "deliver")
+                        }
+                      >
+                        Delivered?
+                      </button>
+                    )}
+
+                    {order.status === "rejected" && (
+                      <span className="text-danger fw-bold">
+                        Rejected
+                      </span>
+                    )}
+
+                    {order.status === "cancelled" && (
+                      <span className="text-warning fw-bold">
+                        Cancelled
+                      </span>
+                    )}
+
+                    {order.status === "delivered" && (
+                      <span className="text-success fw-bold">
+                        Delivered
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })
           )}
         </tbody>
       </table>
@@ -114,3 +224,144 @@ const ViewOrders = () => {
 };
 
 export default ViewOrders;
+
+
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import "../Admin/ViewComplaints.css";
+
+// const ViewOrders = () => {
+//   const [orders, setOrders] = useState([]);
+//   const [statusFilter, setStatusFilter] = useState("all");
+
+//   // =========================
+//   // FETCH ORDERS
+//   // =========================
+//   useEffect(() => {
+//     const fetchOrders = async () => {
+//       const userId = localStorage.getItem("userId");
+
+//       if (!userId) {
+//         alert("User ID not found");
+//         return;
+//       }
+
+//       try {
+//         const res = await axios.get(
+//           `http://localhost:5000/api/orderbyuser/${userId}`
+//         );
+//         setOrders(res.data.orders || []);
+//       } catch (err) {
+//         alert("Failed to load orders");
+//       }
+//     };
+
+//     fetchOrders();
+//   }, []);
+
+//   // =========================
+//   // HANDLE ACTIONS
+//   // =========================
+//   const handleAction = async (orderId, action) => {
+//     try {
+//       let res;
+
+//       if (action === "accept") {
+//         res = await axios.post(
+//           `http://localhost:5000/api/acceptorder/${orderId}`
+//         );
+//       }
+
+//       if (action === "reject") {
+//         res = await axios.post(
+//           `http://localhost:5000/api/orderaction/${orderId}`,
+//           { action }
+//         );
+//       }
+
+//       if (res?.data?.success) {
+//         setOrders((prev) =>
+//           prev.map((o) =>
+//             o._id === orderId
+//               ? {
+//                   ...o,
+//                   status: action === "accept" ? "confirmed" : "rejected",
+//                 }
+//               : o
+//           )
+//         );
+//       }
+//     } catch (err) {
+//       alert("Action failed");
+//     }
+//   };
+
+//   const filteredOrders =
+//     statusFilter === "all"
+//       ? orders
+//       : orders.filter((o) => o.status === statusFilter);
+
+//   return (
+//     <div className="orders-container">
+//       <h2>Orders</h2>
+
+//       <select
+//         value={statusFilter}
+//         onChange={(e) => setStatusFilter(e.target.value)}
+//       >
+//         <option value="all">All</option>
+//         <option value="pending">Pending</option>
+//         <option value="confirmed">Confirmed</option>
+//         <option value="rejected">Rejected</option>
+//         <option value="cancelled">Cancelled</option>
+//         <option value="delivered">Delivered</option>
+//       </select>
+
+//       <table className="orders-table">
+//         <thead>
+//           <tr>
+//             <th>User</th>
+//             <th>Product</th>
+//             <th>Qty</th>
+//             <th>Status</th>
+//             <th>Action</th>
+//           </tr>
+//         </thead>
+
+//         <tbody>
+//           {filteredOrders.map((o) => (
+//             <tr key={o._id}>
+//               <td>{o.userId?.userFullname}</td>
+//               <td>{o.productId?.ProductName}</td>
+//               <td>{o.quantity}</td>
+//               <td>{o.status}</td>
+//               <td>
+//                 {o.status === "pending" && (
+//                   <>
+//                     <button
+//                       onClick={() => handleAction(o._id, "accept")}
+//                     >
+//                       Approve
+//                     </button>
+//                     <button
+//                       className="btn btn-danger"
+//                       onClick={() => handleAction(o._id, "reject")}
+//                     >
+//                       Reject
+//                     </button>
+//                   </>
+//                 )}
+
+//                 {o.status !== "pending" && (
+//                   <span className="fw-bold">{o.status}</span>
+//                 )}
+//               </td>
+//             </tr>
+//           ))}
+//         </tbody>
+//       </table>
+//     </div>
+//   );
+// };
+
+// export default ViewOrders;

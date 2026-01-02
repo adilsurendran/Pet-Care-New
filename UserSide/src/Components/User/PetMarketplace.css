@@ -1,0 +1,103 @@
+.market-page {
+  padding-bottom: 70px;
+  background: #f4fff9;
+  min-height: 100vh;
+}
+
+.tab-view {
+  padding: 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 18px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.card .price {
+  font-weight: bold;
+  color: #2ecc71;
+}
+
+.card button {
+  width: 100%;
+  background: #2ecc71;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+.order-card {
+  background: white;
+  margin-bottom: 12px;
+  padding: 15px;
+  border-radius: 16px;
+}
+
+.status.Approved { color: green; }
+.status.Rejected { color: red; }
+.status.Pending { color: orange; }
+
+.sell-form input {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.sell-form button {
+  background: #27ae60;
+  color: white;
+  width: 100%;
+  padding: 10px;
+  border-radius: 14px;
+  border: none;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  flex: 1;
+  padding: 8px;
+  border-radius: 10px;
+  border: none;
+  background: #3498db;
+  color: white;
+}
+
+.actions .reject {
+  background: #e74c3c;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  border-top: 1px solid #ddd;
+}
+
+.bottom-nav button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: none;
+}
+
+.bottom-nav .active {
+  background: #2ecc71;
+  color: white;
+}

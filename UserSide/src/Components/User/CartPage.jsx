@@ -84,7 +84,7 @@ const CartPage = () => {
       }
     } catch (error) {
       console.error("Error booking product:", error);
-      alert("Error booking product.");
+      alert(error.response.data.message ||"Error booking product.");
     }
   };
 
