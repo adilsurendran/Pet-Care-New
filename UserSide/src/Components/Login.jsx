@@ -42,6 +42,7 @@ const Login = () => {
           navigate("/admindash");
         } else if (role === "user") {
           localStorage.setItem("user",response.data.data.userDetails._id)
+          localStorage.setItem("name",response.data.data.userDetails.userFullname)
           console.log("Navigating to user home...");
           navigate("/buyer-dash");
         } else if (role === "shop") {

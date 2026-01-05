@@ -55,6 +55,9 @@ const BuyerNav = () => {
         <Link to={'/pestmarketplace'} className="nav-item nav-link">
           Pets
         </Link>
+        <Link to={'/community'} className="nav-item nav-link">
+          Community
+        </Link>
 
         <a
           className="nav-item nav-link nav-contact bg-primary text-white px-5 ms-lg-5"

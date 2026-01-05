@@ -1,5 +1,5 @@
 import express from 'express';
-import { acceptBooking, acceptOrderBooking, addGameAccount, addGuide, addPet, AddtoCart, bookDoctor, bookProduct, cancelOrderBooking, createOrGetChat, deleteDoctor, deleteGuide, deletePet, deleteProduct, DeleteUser, deliverOrderBooking, doctorRegistration, editProduct, getAllBuyers, getAlldoct, getAllProducts, getAllShops, getAllUsers, getChatList, getDocBooking, getDoctorChatList, getMessages, getOrdersByUser, getPetById, getUserPets, getUserProfile, login, refillMoney, RejectBooking, RejectOrderBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateCartQuantity, updateDoctor, updatePet, updateUserProfile, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
+import { acceptBooking, acceptOrderBooking, addComment, addGameAccount, addGuide, addPet, addPetForSale, AddtoCart, bookDoctor, bookProduct, buyPet, cancelOrderBooking, createOrGetChat, createPost, deleteDoctor, deleteGuide, deletePet, DeletePetsForSale, deletePost, deleteProduct, DeleteUser, deliverOrderBooking, doctorRegistration, EditPetForSale, editProduct, getAllBuyers, getAlldoct, getAllPosts, getAllProducts, getAllShops, getAllUsers, getBuyerOrders, getChatList, getDocBooking, getDoctorChatList, getMessages, getMyPetsForSale, getOrdersByUser, getPetById, getPetsForSale, getSellerOrders, getUserPets, getUserProfile, login, refillMoney, RejectBooking, RejectOrderBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleLike, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateCartQuantity, updateDoctor, updateOrderStatus, updatePet, updateUserProfile, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
 import upload from '../middleware/upload.js'; 
 
 
@@ -80,6 +80,26 @@ route.delete("/pets/:petId", deletePet);
 
 route.get("/users/profile/:userId", getUserProfile);
 route.put("/users/profile/:userId", updateUserProfile);
+
+route.get("/pets/sell/:userId", getPetsForSale);
+route.get("/sell/mypets/:userId", getMyPetsForSale);
+
+route.post("/sell/:userId",upload.single("image"),addPetForSale);
+route.put("/sell/:userId",upload.single("image"),EditPetForSale);
+route.delete("/sell/:userId",DeletePetsForSale);
+
+route.post("/buy", buyPet);
+
+route.get("/orders/buyer/:userId", getBuyerOrders);
+route.get("/orders/seller/:userId", getSellerOrders);
+
+route.put("/order/:orderId", updateOrderStatus);
+
+route.post("/community/post", upload.single("image"), createPost);
+route.get("/community/posts", getAllPosts);
+route.delete("/community/post/:id", deletePost);
+route.put("/community/like/:id", toggleLike);
+route.post("/community/comment/:id", addComment);
 
 
 export default route;

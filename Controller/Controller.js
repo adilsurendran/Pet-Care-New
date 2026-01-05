@@ -2267,3 +2267,347 @@ export const updateUserProfile = async (req, res) => {
     });
   }
 };
+
+import PetSale from "../Model/PetSale.js";
+import PetOrder from "../Model/PetOrder.js";
+
+/* ===============================
+   GET ALL PETS FOR SALE (HOME)
+   Excludes logged-in user's pets
+================================ */
+export const getPetsForSale = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    // console.log(userId);
+    
+
+    const pets = await PetSale.find({
+      sellerId: { $ne: userId },
+      status: "Available"
+    });
+
+    res.json(pets);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch pets" });
+  }
+};
+
+export const getMyPetsForSale = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    // console.log(userId);
+    
+
+    const pets = await PetSale.find({
+      sellerId: userId ,
+    });
+
+    res.json(pets);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch pets" });
+  }
+};
+
+/* ===============================
+   ADD PET FOR SALE (SELL TAB)
+================================ */
+export const addPetForSale = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { name, breed, age, price } = req.body;
+
+    if (!name || !breed || !price) {
+      return res.status(400).json({ message: "Missing fields" });
+    }
+
+    const pet = await PetSale.create({
+      sellerId: userId,
+      name,
+      breed,
+      age,
+      price,
+      image: req.file ? req.file.filename : null // ✅ IMAGE
+    });
+
+    res.status(201).json({
+      message: "Pet added for sale",
+      pet
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to add pet" });
+  }
+};
+
+export const EditPetForSale = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { name, breed, age, price } = req.body;
+
+    if (!name || !breed || !price) {
+      return res.status(400).json({ message: "Missing fields" });
+    }
+
+    const pet = await PetSale.findByIdAndUpdate(userId,{
+      name,
+      breed,
+      age,
+      price,
+      image: req.file ? req.file.filename : null // ✅ IMAGE
+    });
+
+    res.status(201).json({
+      message: "Pet added for sale",
+      pet
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to add pet" });
+  }
+};
+
+// export const DeletePetsForSale = async (req, res) => {
+//   try {
+//     const { userId } = req.params;
+//     const pets = await PetSale.findByIdAndDelete(userId);
+//     res.json(pets);
+//   } catch (err) {
+//     res.status(500).json({ message: "Failed to fetch pets" });
+//   }
+// };
+import fs from "fs";
+import path from "path";
+import CommunityPost from '../Model/CommunityPost.js';
+
+export const DeletePetsForSale = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // 1️⃣ Find pet first
+    const pet = await PetSale.findById(userId);
+
+    if (!pet) {
+      return res.status(404).json({ message: "Pet not found" });
+    }
+
+    // 2️⃣ Delete image from uploads
+    if (pet.image) {
+      const imagePath = path.join(
+        process.cwd(),
+        "uploads",
+        pet.image
+      );
+
+      // check file exists
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
+
+    // 3️⃣ Delete pet document
+    await PetSale.findByIdAndDelete(userId);
+
+    res.json({ message: "Pet and image deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to delete pet" });
+  }
+};
+
+
+/* ===============================
+   BUY REQUEST
+================================ */
+export const buyPet = async (req, res) => {
+  try {
+    const { petId, buyerId } = req.body;
+
+    const pet = await PetSale.findById(petId);
+    if (!pet) return res.status(404).json({ message: "Pet not found" });
+
+    const order = await PetOrder.create({
+      petId,
+      buyerId,
+      sellerId: pet.sellerId
+    });
+
+    res.status(201).json({
+      message: "Buy request sent",
+      order
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to send request" });
+  }
+};
+
+/* ===============================
+   BUYER ORDERS
+================================ */
+export const getBuyerOrders = async (req, res) => {
+  try {
+    const orders = await PetOrder.find({ buyerId: req.params.userId })
+      .populate("petId");
+
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch orders" });
+  }
+};
+
+/* ===============================
+   SELLER REQUESTS
+================================ */
+export const getSellerOrders = async (req, res) => {
+  try {
+    const orders = await PetOrder.find({ sellerId: req.params.userId })
+      .populate("petId")
+      .populate("buyerId", "userFullname");
+
+    res.json(orders);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to fetch seller orders" });
+  }
+};
+
+/* ===============================
+   UPDATE ORDER STATUS
+================================ */
+// export const updateOrderStatus = async (req, res) => {
+//   try {
+//     const { status } = req.body;
+
+//     const order = await PetOrder.findByIdAndUpdate(
+//       req.params.orderId,
+//       { status },
+//       { new: true }
+//     );
+
+//     if (!order) return res.status(404).json({ message: "Order not found" });
+
+//     // If approved → mark pet as sold
+//     if (status === "Approved") {
+//       await PetSale.findByIdAndUpdate(order.petId, {
+//         status: "Sold"
+//       });
+//     }
+
+//     res.json({
+//       message: "Order updated",
+//       order
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: "Failed to update order" });
+//   }
+// };
+
+
+export const updateOrderStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const { orderId } = req.params;
+
+    // 1️⃣ Update the selected order
+    const order = await PetOrder.findByIdAndUpdate(
+      orderId,
+      { status },
+      { new: true }
+    );
+
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // 2️⃣ If approved → handle exclusivity
+    if (status === "Approved") {
+
+      // 🔹 Mark pet as Sold / NotAvailable
+      await PetSale.findByIdAndUpdate(order.petId, {
+        status: "NotAvailable"
+      });
+
+      // 🔹 Cancel all other orders for same pet
+      await PetOrder.updateMany(
+        {
+          petId: order.petId,
+          _id: { $ne: order._id } // exclude approved order
+        },
+        {
+          status: "Sold"
+        }
+      );
+    }
+
+    res.json({
+      message: "Order updated successfully",
+      order
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update order" });
+  }
+};
+
+
+
+/* ================= CREATE POST ================= */
+export const createPost = async (req, res) => {
+  try {
+    const { title, description, userId, userFullname, role } = req.body;
+
+    const post = await CommunityPost.create({
+      title,
+      description,
+      image: req.file?.filename || null,
+      postedBy: { userId, userFullname, role }
+    });
+
+    res.json(post);
+  } catch (err) {
+    console.log(err);
+    
+    res.status(500).json({ message: "Failed to create post" });
+  }
+};
+
+/* ================= GET ALL POSTS ================= */
+export const getAllPosts = async (req, res) => {
+  const posts = await CommunityPost.find().sort({ createdAt: -1 });
+  res.json(posts);
+};
+
+/* ================= DELETE POST ================= */
+export const deletePost = async (req, res) => {
+  await CommunityPost.findByIdAndDelete(req.params.id);
+  res.json({ message: "Post deleted" });
+};
+
+/* ================= LIKE / UNLIKE ================= */
+export const toggleLike = async (req, res) => {
+  const { userId } = req.body;
+  const post = await CommunityPost.findById(req.params.id);
+
+  if (!post) return res.status(404).json({ message: "Post not found" });
+
+  const liked = post.likes.includes(userId);
+
+  if (liked) {
+    post.likes.pull(userId);
+  } else {
+    post.likes.push(userId);
+  }
+
+  await post.save();
+  res.json(post);
+};
+
+/* ================= ADD COMMENT ================= */
+export const addComment = async (req, res) => {
+  const { userId, userFullname, text } = req.body;
+
+  const post = await CommunityPost.findById(req.params.id);
+  post.comments.push({ userId, userFullname, text });
+
+  await post.save();
+  res.json(post);
+};

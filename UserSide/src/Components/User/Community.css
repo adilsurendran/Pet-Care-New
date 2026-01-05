@@ -1,0 +1,198 @@
+/* ===============================
+   COMMUNITY PAGE WRAPPER
+================================ */
+.community-page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f5f6f8;
+  min-height: 100vh;
+}
+
+/* ===============================
+   ADD POST FORM
+================================ */
+.post-form {
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.post-form input,
+.post-form textarea {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+}
+
+.post-form textarea {
+  resize: none;
+  min-height: 80px;
+}
+
+.post-form input[type="file"] {
+  border: none;
+  padding: 0;
+}
+
+.post-form button {
+  width: 100%;
+  padding: 10px;
+  background: linear-gradient(135deg, #ffcc00, #ffb300);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.post-form button:hover {
+  opacity: 0.9;
+}
+
+/* ===============================
+   POST CARD
+================================ */
+.post-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* ===============================
+   POST HEADER
+================================ */
+.post-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.post-header b {
+  font-size: 15px;
+}
+
+.post-header .role {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: #000;
+  color: #ffcc00;
+  margin-left: 8px;
+}
+
+.post-header button {
+  background: none;
+  border: none;
+  color: #ff3b3b;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+/* ===============================
+   POST CONTENT
+================================ */
+.post-card h4 {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.post-card p {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+}
+
+/* ===============================
+   POST IMAGE
+================================ */
+.post-card img {
+  width: 100%;
+  margin-top: 12px;
+  border-radius: 10px;
+  max-height: 360px;
+  object-fit: cover;
+}
+
+/* ===============================
+   POST ACTIONS (LIKE)
+================================ */
+.post-actions {
+  margin-top: 12px;
+}
+
+.post-actions button {
+  background: none;
+  border: none;
+  font-size: 15px;
+  cursor: pointer;
+  color: #ff3b3b;
+}
+
+/* ===============================
+   COMMENTS SECTION
+================================ */
+.comments {
+  margin-top: 12px;
+}
+
+.comments p {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.comments b {
+  color: #000;
+}
+
+/* ===============================
+   ADD COMMENT BOX
+================================ */
+.comment-box {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.comment-box input {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 20px;
+  border: 1px solid #ddd;
+  font-size: 13px;
+}
+
+.comment-box button {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: none;
+  background: #000;
+  color: #ffcc00;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.comment-box button:hover {
+  opacity: 0.85;
+}
+
+/* ===============================
+   RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  .community-page {
+    padding: 12px;
+  }
+
+  .post-form,
+  .post-card {
+    padding: 14px;
+  }
+}

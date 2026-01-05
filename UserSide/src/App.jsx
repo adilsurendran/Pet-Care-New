@@ -43,6 +43,7 @@ import DoctorChatPage from './Components/Doctor/DoctorChatPage';
 import PetProfile from './Components/User/PetProfile';
 import UserProfile from './Components/User/UserProfile';
 import PetMarketplace from './Components/User/PetMarketplace';
+import Community from './Components/User/Community';
 
 
 
@@ -92,6 +93,7 @@ function App() {
         <Route path='/pet-profile' element={<PetProfile />} />
         <Route path='/profile' element={<UserProfile />} />
         <Route path='/pestmarketplace' element={<PetMarketplace />} />
+        <Route path='/community' element={<Community />} />
 
 
         

@@ -101,3 +101,41 @@
   background: #2ecc71;
   color: white;
 }
+
+.request-panel {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.muted {
+  color: #777;
+  font-size: 14px;
+}
+
+.order-card.history {
+  background: #f9f9f9;
+  border-left: 4px solid #ccc;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  margin-top: 6px;
+}
+
+.status-badge.Approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-badge.Rejected {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.status-badge.Cancelled {
+  background: #fff3cd;
+  color: #856404;
+}
