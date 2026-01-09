@@ -1,0 +1,174 @@
+/* RegistrationPage.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
+
+.reg-page-wrapper {
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f1f8e9 0%, #ffffff 100%);
+    display: flex;
+    flex-direction: column;
+}
+
+.reg-page-wrapper .premium-header {
+    position: relative;
+    background: transparent;
+}
+
+.reg-content-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px 40px;
+    /* Space for navbar */
+}
+
+.premium-reg-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 24px;
+    padding: 35px 40px;
+    width: 100%;
+    max-width: 550px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.reg-card-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.reg-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #2e7d32;
+    margin-bottom: 8px;
+}
+
+.reg-subtitle {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+.premium-reg-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.reg-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.reg-input-group label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #444;
+    padding-left: 5px;
+}
+
+.reg-input-group input,
+.reg-input-group textarea {
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.reg-input-group input:focus {
+    border-color: #4caf50;
+    box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+}
+
+.premium-reg-btn {
+    background: #4caf50;
+    color: white;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 16px rgba(76, 175, 80, 0.2);
+}
+
+.premium-reg-btn:hover {
+    background-color: #43a047;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+}
+
+.premium-reg-btn:disabled {
+    background: #a5d6a7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.reg-footer {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.login-link {
+    color: #2e7d32;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+/* Error styles */
+.reg-error {
+    background: #ffebee;
+    color: #c62828;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Visual accent */
+.card-accent {
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 100px;
+    height: 100px;
+    background: #f1f8e9;
+    border-radius: 50%;
+    z-index: -1;
+}
+
+@media (max-width: 576px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .premium-reg-card {
+        padding: 25px 20px;
+    }
+}

@@ -1,59 +1,148 @@
 body {
-    font-family: Arial, sans-serif;
-    
+  font-family: Arial, sans-serif;
+
 }
+
 #hero {
-    background: url('https://i.pinimg.com/736x/63/90/78/639078f337ee5ee3680ab3ea0f259c0d.jpg') no-repeat center;
-    background-size: cover;
-    color: white;
+  background: url('https://i.pinimg.com/736x/63/90/78/639078f337ee5ee3680ab3ea0f259c0d.jpg') no-repeat center;
+  background-size: cover;
+  color: white;
 }
+
 .carousel-section img {
-    max-height: 400px;
-    object-fit: cover;
+  max-height: 400px;
+  object-fit: cover;
+}
+
+.premium-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 0;
+  z-index: 100;
+  background: transparent;
+}
+
+.logo-brand {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #2e7d32;
+  margin: 0;
+}
+
+.logo-brand span {
+  color: #8bc34a;
+}
+
+.premium-nav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.premium-nav a {
+  text-decoration: none;
+  color: #444;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: color 0.3s;
+}
+
+.premium-nav a:hover {
+  color: #4caf50;
+}
+
+.login-pill {
+  background: white;
+  padding: 10px 25px;
+  border-radius: 50px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e0e0e0;
 }
 
 /* Style for the whole text */
 .custom-font-color {
-    color: #f39c12; /* Golden yellow */
-    font-family: 'Comic Sans MS', sans-serif; /* You can use any fun font */
-    font-weight: bold;
-  }
-  .navbar {
-    padding: 10px 20px; /* Reduce padding (adjust values as needed) */
-  }
-  
-  /* Style for the "oo" part of "WoofTale" */
-  .custom-oo {
-    color: #8e44ad; /* Purple or any color you like */
-    font-size: 1.5em; /* Make the "oo" a bit larger */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Add a shadow for depth */
-  }
-  
+  color: #f39c12;
+  /* Golden yellow */
+  font-family: 'Comic Sans MS', sans-serif;
+  /* You can use any fun font */
+  font-weight: bold;
+}
 
-  /* Add a custom font for the heading */
+.logo-text {
+  color: #2e7d32;
+  font-weight: 800;
+}
+
+.logo-accent {
+  color: #4caf50;
+}
+
+.header-nav .btn-success {
+  background-color: #4caf50;
+  border-color: #4caf50;
+}
+
+.header-nav .btn-success:hover {
+  background-color: #43a047;
+  border-color: #43a047;
+}
+
+.navbar {
+  padding: 10px 20px;
+  /* Reduce padding (adjust values as needed) */
+}
+
+/* Style for the "oo" part of "WoofTale" */
+.custom-oo {
+  color: #8e44ad;
+  /* Purple or any color you like */
+  font-size: 1.5em;
+  /* Make the "oo" a bit larger */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  /* Add a shadow for depth */
+}
+
+
+/* Add a custom font for the heading */
 .custom-heading {
-    font-family: 'Poppins', sans-serif; /* You can use Google Fonts or any other font */
-    font-weight: 700;
-    color: #f39c12; /* Beautiful golden color */
-    text-align: center; /* Center-align the text */
-    text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Add a shadow for depth */
+  font-family: 'Poppins', sans-serif;
+  /* You can use Google Fonts or any other font */
+  font-weight: 700;
+  color: #f39c12;
+  /* Beautiful golden color */
+  text-align: center;
+  /* Center-align the text */
+  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+  /* Add a shadow for depth */
+}
+
+/* Paw icon style */
+.paw-icon {
+  color: #8e44ad;
+  /* Purple paw color */
+  font-size: 2rem;
+  /* Make the paw bigger */
+  margin-right: 10px;
+  /* Add spacing between paw and text */
+}
+
+/* Animation for fun effect */
+@keyframes paw-animation {
+  0% {
+    transform: scale(1);
   }
-  
-  /* Paw icon style */
-  .paw-icon {
-    color: #8e44ad; /* Purple paw color */
-    font-size: 2rem; /* Make the paw bigger */
-    margin-right: 10px; /* Add spacing between paw and text */
+
+  50% {
+    transform: scale(1.2);
   }
-  
-  /* Animation for fun effect */
-  @keyframes paw-animation {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.2); }
-    100% { transform: scale(1); }
+
+  100% {
+    transform: scale(1);
   }
-  
-  .paw-icon:hover {
-    animation: paw-animation 0.5s ease-in-out;
-  }
-  
+}
+
+.paw-icon:hover {
+  animation: paw-animation 0.5s ease-in-out;
+}

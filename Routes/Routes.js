@@ -72,7 +72,7 @@ route.get(
   getDoctorChatList
 );
 
-route.post("/pets/add/:ownerId", addPet);
+route.post("/pets/add/:ownerId",upload.single("image"), addPet);
 route.get("/pets/user/:ownerId", getUserPets);
 route.get("/pets/:petId", getPetById);
 route.put("/pets/:petId", updatePet);

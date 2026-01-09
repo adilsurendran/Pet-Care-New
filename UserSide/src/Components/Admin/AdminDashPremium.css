@@ -1,0 +1,196 @@
+/* AdminDashPremium.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
+
+.admin-dash-wrapper {
+    font-family: 'Outfit', sans-serif;
+    background-color: #f8faf8;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header Adjustments */
+.admin-header {
+    background: #ffffff;
+    padding: 15px 0;
+    border-bottom: 1px solid #eef2ee;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.02);
+}
+
+.admin-nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logout-pill {
+    background: #ffebee;
+    color: #c62828;
+    padding: 10px 24px;
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #ffcdd2;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.logout-pill:hover {
+    background: #c62828;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(198, 40, 40, 0.2);
+}
+
+/* Main Dashboard Layout */
+.admin-main-content {
+    flex: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 50px 30px;
+}
+
+.admin-welcome {
+    margin-bottom: 50px;
+    text-align: left;
+}
+
+.admin-welcome h1 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+}
+
+.admin-welcome h1 span {
+    color: #4caf50;
+}
+
+.admin-welcome p {
+    color: #666;
+    font-size: 1.15rem;
+    font-weight: 400;
+}
+
+/* Unique Grid Cards */
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(520px, 1fr));
+    gap: 30px;
+}
+
+.dashboard-premium-card {
+    background: white;
+    border-radius: 30px;
+    padding: 40px;
+    text-decoration: none !important;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.dashboard-premium-card:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 25px 50px -12px rgba(76, 175, 80, 0.15);
+    border-color: #e8f5e9;
+}
+
+.card-icon-container {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    font-size: 2.2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.dashboard-premium-card:hover .card-icon-container {
+    transform: scale(1.1) rotate(4deg);
+}
+
+.card-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #2e7d32;
+    margin-bottom: 12px;
+}
+
+.card-desc {
+    color: #666;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+/* Unique Background patterns for cards */
+.card-pattern {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 120px;
+    height: 120px;
+    background: rgba(76, 175, 80, 0.03);
+    border-radius: 40px;
+    transform: rotate(15deg);
+    z-index: 0;
+    transition: all 0.4s ease;
+}
+
+.dashboard-premium-card:hover .card-pattern {
+    transform: rotate(45deg) scale(1.2);
+    background: rgba(76, 175, 80, 0.05);
+}
+
+/* Card Specific Colors */
+.users-card .card-icon-container {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.shops-card .card-icon-container {
+    background: #f1f8e9;
+    color: #388e3c;
+}
+
+.doctors-card .card-icon-container {
+    background: #e1f5fe;
+    color: #0288d1;
+}
+
+.reg-card .card-icon-container {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.complaints-card .card-icon-container {
+    background: #fff3e0;
+    color: #f57c00;
+}
+
+@media (max-width: 768px) {
+    .admin-welcome h1 {
+        font-size: 2.2rem;
+    }
+
+    .admin-main-content {
+        padding: 30px 20px;
+    }
+
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+}

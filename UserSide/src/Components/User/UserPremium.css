@@ -1,0 +1,316 @@
+/* UserPremium.css */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --user-primary: #4caf50;
+    --user-primary-dark: #2e7d32;
+    --user-primary-light: #f1f8e9;
+    --user-accent: #e8f5e9;
+    --user-bg: #f8fafc;
+    --user-card-bg: #ffffff;
+    --user-text: #1e293b;
+    --user-text-light: #64748b;
+    --user-sidebar-width: 280px;
+    --user-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+}
+
+.user-layout {
+    display: flex;
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--user-bg);
+    min-height: 100vh;
+    color: var(--user-text);
+}
+
+/* Sidebar Styling */
+.user-sidebar {
+    width: var(--user-sidebar-width);
+    background: white;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.02);
+    z-index: 1000;
+    border-right: 1px solid #e2e8f0;
+}
+
+.sidebar-header {
+    padding: 40px 30px;
+}
+
+.sidebar-brand h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--user-text);
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+.sidebar-brand span {
+    color: var(--user-primary);
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 0 20px;
+    overflow-y: auto;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sidebar-nav::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 10px;
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    color: var(--user-text-light);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 0.95rem;
+}
+
+.nav-item:hover {
+    background: var(--user-primary-light);
+    color: var(--user-primary-dark);
+    transform: translateX(5px);
+}
+
+.nav-item.active {
+    background: var(--user-primary);
+    color: white;
+    box-shadow: 0 10px 15px -3px rgba(76, 175, 80, 0.2);
+}
+
+.nav-icon {
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.logout-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: #fff1f2;
+    color: #e11d48;
+    border: none;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: #ffe4e6;
+    transform: translateY(-2px);
+}
+
+/* Main Content Area */
+.user-main {
+    flex: 1;
+    margin-left: var(--user-sidebar-width);
+    padding: 40px;
+    max-width: calc(100vw - var(--user-sidebar-width));
+}
+
+.panel-header {
+    margin-bottom: 40px;
+}
+
+.panel-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--user-text);
+    margin: 0;
+}
+
+.panel-title span {
+    color: var(--user-primary);
+}
+
+.panel-subtitle {
+    color: var(--user-text-light);
+    margin-top: 8px;
+    font-size: 1.1rem;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: white;
+    padding: 30px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: var(--user-shadow);
+    border: 1px solid #f1f5f9;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    width: 100px;
+    height: 100px;
+    background: var(--user-primary);
+    opacity: 0.03;
+    border-radius: 50%;
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    background: var(--user-primary-light);
+    color: var(--user-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.stat-info h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--user-text);
+}
+
+.stat-info p {
+    margin: 0;
+    color: var(--user-text-light);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+/* Shortcut Grid */
+.section-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.shortcut-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.shortcut-card {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid #f1f5f9;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.shortcut-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--user-primary);
+    box-shadow: 0 20px 25px -5px rgba(76, 175, 80, 0.1);
+}
+
+.shortcut-icon {
+    font-size: 2rem;
+    background: #f8fafc;
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    color: var(--user-primary);
+    transition: all 0.3s ease;
+}
+
+.shortcut-card:hover .shortcut-icon {
+    background: var(--user-primary);
+    color: white;
+}
+
+.shortcut-card span {
+    font-weight: 700;
+    color: var(--user-text);
+    font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .user-sidebar {
+        width: 80px;
+    }
+
+    .sidebar-brand h1,
+    .nav-item span,
+    .logout-btn span {
+        display: none;
+    }
+
+    .user-main {
+        margin-left: 80px;
+    }
+
+    .nav-item {
+        justify-content: center;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+    .user-sidebar {
+        display: none;
+    }
+
+    .user-main {
+        margin-left: 0;
+        padding: 20px;
+    }
+}

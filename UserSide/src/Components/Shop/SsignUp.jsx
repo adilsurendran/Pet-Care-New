@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import "./SsignUp.css";
-import RegHead from "../RegHead";
-import { useNavigate } from "react-router-dom";
+import "../RegistrationPage.css";
+import IndexHeader from "../IndexHeader";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
 const SsignUp = () => {
@@ -18,12 +18,10 @@ const SsignUp = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -32,7 +30,7 @@ const SsignUp = () => {
       const response = await axios.post("http://localhost:5000/api/shopreg", formData);
       if (response.data.success) {
         alert("Shop registered successfully!");
-        navigate("/login"); // Redirect to login page after success
+        navigate("/login");
       } else {
         alert(response.data.message || "Registration failed.");
       }
@@ -45,115 +43,114 @@ const SsignUp = () => {
   };
 
   return (
-    <div>
-      <RegHead />
-      <div className="login-container">
-        {/* Background Video */}
-        <video autoPlay muted loop className="background-video">
-          <source src="/flying.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+    <div className="reg-page-wrapper">
+      <IndexHeader />
 
-        {/* Shop Registration Form */}
+      <div className="reg-content-container">
         <motion.div
-          className="login-form"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
+          className="premium-reg-card"
+          initial={{ opacity: 0, scale: 0.98, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <h1 className="title">Shop Registration</h1>
-          <form onSubmit={handleSubmit}>
-            <div className="input-container">
-              <motion.input
-                type="text"
-                name="shopName"
-                placeholder="Shop Name"
-                className="input-field"
-                required
-                value={formData.shopName}
-                onChange={handleChange}
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              />
+          <div className="card-accent"></div>
+
+          <div className="reg-card-header">
+            <h1 className="reg-title">Shop Registration</h1>
+            <p className="reg-subtitle">Partner with Wooftale and grow your business</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="premium-reg-form">
+            <div className="form-row">
+              <div className="reg-input-group">
+                <label>Shop Name</label>
+                <input
+                  type="text"
+                  name="shopName"
+                  placeholder="Official Shop Name"
+                  required
+                  value={formData.shopName}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="reg-input-group">
+                <label>Phone Number</label>
+                <input
+                  type="text"
+                  name="shopPhone"
+                  placeholder="Contact Number"
+                  required
+                  value={formData.shopPhone}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
-            <div className="input-container">
-              <motion.input
+
+            <div className="reg-input-group">
+              <label>Shop Email</label>
+              <input
                 type="email"
                 name="shopEmail"
-                placeholder="Shop Email"
-                className="input-field"
+                placeholder="shop@example.com"
                 required
                 value={formData.shopEmail}
                 onChange={handleChange}
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
               />
             </div>
-            <div className="input-container">
-              <motion.input
-                type="text"
-                name="shopPhone"
-                placeholder="Shop Phone Number"
-                className="input-field"
-                required
-                value={formData.shopPhone}
-                onChange={handleChange}
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
-            <div className="input-container">
-              <motion.input
-                type="text"
+
+            <div className="reg-input-group">
+              <label>Shop Address</label>
+              <textarea
                 name="shopAddress"
-                placeholder="Shop Address"
-                className="input-field"
+                placeholder="Full location details"
                 required
                 value={formData.shopAddress}
                 onChange={handleChange}
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              />
+                rows="2"
+                style={{ resize: "none" }}
+                className="reg-input-field"
+              ></textarea>
             </div>
-            <div className="input-container">
-              <motion.input
-                type="text"
-                name="userName"
-                placeholder="Username"
-                className="input-field"
-                required
-                value={formData.userName}
-                onChange={handleChange}
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              />
+
+            <div className="form-row">
+              <div className="reg-input-group">
+                <label>Username</label>
+                <input
+                  type="text"
+                  name="userName"
+                  placeholder="Login Username"
+                  required
+                  value={formData.userName}
+                  onChange={handleChange}
+                />
+              </div>
+              <div className="reg-input-group">
+                <label>Password</label>
+                <input
+                  type="password"
+                  name="userPassword"
+                  placeholder="Strong password"
+                  required
+                  value={formData.userPassword}
+                  onChange={handleChange}
+                />
+              </div>
             </div>
-            <div className="input-container">
-              <motion.input
-                type="password"
-                name="userPassword"
-                placeholder="Password"
-                className="input-field"
-                required
-                value={formData.userPassword}
-                onChange={handleChange}
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
+
             <motion.button
               type="submit"
-              className="login-button"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
+              className="premium-reg-btn"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               disabled={loading}
             >
-              {loading ? "Registering..." : "Register Shop"}
+              {loading ? "Registering Shop..." : "Register Shop"}
             </motion.button>
           </form>
-          <div className="navigation-links">
+
+          <div className="reg-footer">
             <p>
-              Already have an account? <a href="/login">Login here</a>
+              Already partnered? <Link to="/login" className="login-link">Login here</Link>
             </p>
           </div>
         </motion.div>

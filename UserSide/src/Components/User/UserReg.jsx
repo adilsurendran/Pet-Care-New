@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import "./UserReg.css";
+import "../RegistrationPage.css";
 import IndexHeader from "../IndexHeader";
-import RegHead from "../RegHead";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const UserReg = () => {
   const navigate = useNavigate();
@@ -19,7 +18,6 @@ const UserReg = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -28,9 +26,9 @@ const UserReg = () => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
 
     try {
       const response = await fetch("http://localhost:5000/api/userregistration", {
@@ -47,167 +45,134 @@ const UserReg = () => {
         alert("User registered successfully!");
         navigate("/login");
       } else {
-        // Display error message from backend
-        setErrorMessage(data.message || "Registration failed. Please try again.");
-        alert(data.message || "Registration failed. Please try again.");
+        setErrorMessage(data.message || "Registration failed.");
       }
     } catch (error) {
       console.error("Error during registration:", error);
-      alert("An error occurred. Please try again later.");
+      setErrorMessage("An unexpected error occurred. Please try again.");
     }
   };
 
   return (
-    <div>
-      <RegHead />
-      <div className="login-container">
-        {/* Background Video */}
-        <video autoPlay muted loop className="background-video">
-          <source src="/flying.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+    <div className="reg-page-wrapper">
+      <IndexHeader />
 
-        {/* User Registration Form */}
+      <div className="reg-content-container">
         <motion.div
-          className="login-form"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
+          className="premium-reg-card"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <h1 className="title">User Registration</h1>
+          <div className="card-accent"></div>
 
-          <form onSubmit={handleSubmit}>
-            {errorMessage && <p className="error-message">{errorMessage}</p>}
+          <div className="reg-card-header">
+            <h1 className="reg-title">Join Wooftale</h1>
+            <p className="reg-subtitle">Create a personal account for your pet care journey</p>
+          </div>
 
-            <div className="input-container">
-              <motion.input
+          {errorMessage && <div className="reg-error">{errorMessage}</div>}
+
+          <form onSubmit={handleSubmit} className="premium-reg-form">
+            <div className="reg-input-group">
+              <label>Full Name</label>
+              <input
                 type="text"
                 name="userFullname"
                 value={formData.userFullname}
                 onChange={handleChange}
-                placeholder="Full Name"
-                className="input-field"
+                placeholder="e.g. John Doe"
                 required
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
               />
             </div>
 
-            <div className="input-container">
-              <motion.input
+            <div className="reg-input-group">
+              <label>Email Address</label>
+              <input
                 type="email"
                 name="userEmail"
                 value={formData.userEmail}
                 onChange={handleChange}
-                placeholder="Email"
-                className="input-field"
+                placeholder="john@example.com"
                 required
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
               />
             </div>
 
-            <div className="input-container">
-              <motion.input
-                type="text"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                placeholder="City"
-                className="input-field"
-                required
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              />
+            <div className="form-row">
+              <div className="reg-input-group">
+                <label>City</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  placeholder="City"
+                  required
+                />
+              </div>
+              <div className="reg-input-group">
+                <label>State</label>
+                <input
+                  type="text"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  placeholder="State"
+                  required
+                />
+              </div>
             </div>
 
-            <div className="input-container">
-              <motion.input
-                type="text"
-                name="state"
-                value={formData.state}
-                onChange={handleChange}
-                placeholder="State"
-                className="input-field"
-                required
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              />
+            <div className="form-row">
+              <div className="reg-input-group">
+                <label>Pin Code</label>
+                <input
+                  type="text"
+                  name="pincode"
+                  value={formData.pincode}
+                  onChange={handleChange}
+                  placeholder="123456"
+                  required
+                />
+              </div>
+              <div className="reg-input-group">
+                <label>Username</label>
+                <input
+                  type="text"
+                  name="userName"
+                  value={formData.userName}
+                  onChange={handleChange}
+                  placeholder="Choose username"
+                  required
+                />
+              </div>
             </div>
 
-            <div className="input-container">
-              <motion.input
-                type="text"
-                name="pincode"
-                value={formData.pincode}
-                onChange={handleChange}
-                placeholder="PinCode"
-                className="input-field"
-                required
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
-
-            <div className="input-container">
-              <motion.input
-                type="text"
-                name="userName"
-                value={formData.userName}
-                onChange={handleChange}
-                placeholder="Username"
-                className="input-field"
-                required
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
-
-            <div className="input-container">
-              <motion.input
+            <div className="reg-input-group">
+              <label>Password</label>
+              <input
                 type="password"
                 name="userPassword"
                 value={formData.userPassword}
                 onChange={handleChange}
-                placeholder="Password"
-                className="input-field"
+                placeholder="Strong password"
                 required
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
               />
             </div>
 
-            {/* <div className="input-container">
-              <motion.select
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                className="input-field"
-                required
-                whileFocus={{ scale: 1.05 }}
-                transition={{ duration: 0.3 }}
-              >
-                <option value="" disabled>
-                  Select Role
-                </option>
-                <option value="buyer">Buyer</option>
-                <option value="seller">Seller</option>
-              </motion.select>
-            </div> */}
-
             <motion.button
               type="submit"
-              className="login-button"
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
+              className="premium-reg-btn"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              Register User
+              Register Account
             </motion.button>
           </form>
 
-          <div className="navigation-links">
+          <div className="reg-footer">
             <p>
-              Already have an account? <a href="/login">Login here</a>
+              Already a member? <Link to="/login" className="login-link">Login here</Link>
             </p>
           </div>
         </motion.div>

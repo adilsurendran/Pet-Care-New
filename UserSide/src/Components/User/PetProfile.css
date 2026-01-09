@@ -33,29 +33,49 @@
 
 .pet-card {
   background: white;
-  border-radius: 18px;
-  padding: 20px;
+  border-radius: 22px;
+  padding: 28px 22px;
   text-align: center;
   cursor: pointer;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  transition: transform .2s;
+  min-height: 220px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.1);
+  transition: transform .25s ease, box-shadow .25s ease;
 }
 
 .pet-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.15);
 }
 
+
 .pet-avatar {
-  width: 60px;
-  height: 60px;
-  background: #2ecc71;
-  color: white;
-  font-size: 22px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 10px;
+  overflow: hidden; /* VERY IMPORTANT */
+  margin: 0 auto 12px;
+  border: 2px solid #2ecc71;
+}
+
+.pet-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* prevents stretching */
+}
+
+.pet-detail-image {
+  width: 20%;
+  height: 260px;
+  border-radius: 18px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  border: 2px solid #eaeaea;
+}
+
+.pet-detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .pet-detail-card {

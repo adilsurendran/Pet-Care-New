@@ -261,6 +261,7 @@ export const login = async (req, res) => {
             role,
             username: user.username,
             userDetails: role === "admin" ? null : userDetails || {}, // Ensure empty object fallback
+            verify:user.verify
         };
 
         return res.status(200).json({
@@ -1087,7 +1088,7 @@ export const viewOrdersByProductOwner = async (req, res) => {
       const users = await userData.find().populate("commonKey", "role");
   
       // Filter users who have role "buyer"
-      const buyers = users.filter(user => user.commonKey?.role === "buyer");
+      const buyers = users.filter(user => user.commonKey?.role === "user");
   
       res.status(200).json({
         success: true,
@@ -2110,6 +2111,7 @@ export const addPet = async (req, res) => {
         message: "Name, breed and sex are required"
       });
     }
+    const image=req.file?.path
 
     const pet = await Pet.create({
       ownerId,
@@ -2120,7 +2122,8 @@ export const addPet = async (req, res) => {
       ageMonths,
       sex,
       lastVaccination,
-      weight
+      weight,
+      image: image
     });
 
     res.status(201).json({
@@ -2378,6 +2381,7 @@ export const EditPetForSale = async (req, res) => {
 import fs from "fs";
 import path from "path";
 import CommunityPost from '../Model/CommunityPost.js';
+import { verify } from 'crypto';
 
 export const DeletePetsForSale = async (req, res) => {
   try {

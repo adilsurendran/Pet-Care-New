@@ -3,25 +3,28 @@ import { Link } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
-const IndexHeader = () => {
+const IndexHeader = ({ type }) => {
   return (
-    <div>
-        {/* Header Section */}
-        <header className="bg-dark text-light">
-                <div className="container d-flex justify-content-between align-items-center">
-                <Link to={'/'} className='h1 text-decoration-none'>
-  <h1 className="display-6 custom-font-color">
-    W<span className="custom-oo">oo</span>fTale
-  </h1>
-</Link>
-                    <nav>
-                        <a href="#about" className="text-light mx-2">About</a>
-                        <Link to={'/service'} className="text-light mx-2">Services</Link>
-                        <a href="#contact" className="text-light mx-2">Contact</a>
-                        <Link to='/login' className="text-light mx-2">Login</Link>
-                    </nav>
-                </div>
-            </header>
+    <div className="header-wrapper">
+      <header className="premium-header">
+        <div className="container d-flex justify-content-between align-items-center">
+          <Link to={'/'} className='text-decoration-none'>
+            <h1 className="logo-brand">
+              W<span>oo</span>fTale
+            </h1>
+          </Link>
+          <nav className="premium-nav">
+            {type === 'admin' ? (
+              <Link to='/admindash' className="login-pill">← Dashboard</Link>
+            ) : (
+              <>
+                <Link to={'/service'} className='text-light'>Services</Link>
+                <Link to='/login' className="login-pill">Login</Link>
+              </>
+            )}
+          </nav>
+        </div>
+      </header>
     </div>
   )
 }

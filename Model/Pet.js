@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const PetSchema = new mongoose.Schema(
   {
@@ -45,7 +46,8 @@ const PetSchema = new mongoose.Schema(
 
     weight: {
       type: Number // in KG
-    }
+    },
+    image:{type:String}
   },
   { timestamps: true }
 );

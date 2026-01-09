@@ -1,16 +1,23 @@
 /* LoginPage.css */
 
-/* Container Styles */
-.login-container {
-  position: relative;
-  width: 100%;
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap');
+
+.login-page-wrapper {
+  font-family: 'Outfit', sans-serif;
   height: 100vh;
   overflow: hidden;
+  position: relative;
+}
+
+.login-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #000;
-  z-index: 1; /* Added for ensuring the container stays above the video */
+  /* Changed from flex-end for exact centering */
+  height: 100%;
+  width: 100%;
+  position: relative;
+  z-index: 2;
 }
 
 /* Background Video Styles */
@@ -19,110 +26,221 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 50%;
+  height: 100%;
   object-fit: cover;
-  z-index: -1;
-  filter: brightness(0.5);
+  z-index: -2;
 }
 
-/* Login Form Styles */
-.login-form {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 15px;
-  padding: 40px;
-  width: 100%;
+.video-overlay {
   position: absolute;
-  right: 150px;
-  top: 80px;
-  max-width: 400px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
-  text-align: center;
-  color: #fff;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-/* Title Styles */
-.title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-}
-
-/* Input Container */
-.input-container {
-  margin-bottom: 20px;
-  position: relative;
-}
-
-/* Input Field */
-.input-field {
+  top: 0;
+  left: 0;
   width: 100%;
-  padding: 12px 20px;
-  border-radius: 8px;
-  border: none;
-  font-size: 16px;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%);
+  z-index: -1;
+  backdrop-filter: blur(2px);
+}
+
+/* Premium Login Card */
+.premium-login-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 24px;
+  padding: 30px 40px;
+  /* Reduced from 50px vertical */
+  width: 100%;
+  max-width: 440px;
+  /* Slightly narrower */
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s ease;
+}
+
+.login-card-header {
+  margin-bottom: 25px;
+  /* Reduced from 40px */
+  text-align: center;
+}
+
+.premium-title {
+  font-size: 2.2rem;
+  /* Reduced from 2.8rem */
+  font-weight: 800;
+  color: #2e7d32;
+  margin-bottom: 5px;
+  letter-spacing: -1px;
+}
+
+.premium-title span {
+  color: #8bc34a;
+}
+
+.premium-subtitle {
+  color: #555;
+  font-size: 0.95rem;
+  /* Reduced from 1.1rem */
+  font-weight: 400;
+}
+
+/* Form Styles */
+.premium-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  /* Reduced from 24px */
+}
+
+.premium-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.premium-input-group label {
+  font-weight: 600;
+  font-size: 0.85rem;
+  /* Reduced */
+  color: #444;
+  padding-left: 2px;
+}
+
+.premium-input-group input {
+  padding: 12px 18px;
+  /* More compact padding */
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
   background: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
   color: #333;
   outline: none;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease;
 }
 
-.input-field::placeholder {
-  color: #888;
+.premium-input-group input:focus {
+  border-color: #4caf50;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
 }
 
-/* Button Styles */
-.login-button {
-  width: 100%;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #fff;
-  background: #ff9500;
+.premium-login-btn {
+  background: #4caf50;
+  color: white;
+  padding: 14px;
+  /* More compact */
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 700;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0px 8px 15px rgba(255, 149, 0, 0.2);
-  transition: all 0.3s ease-in-out;
+  margin-top: 5px;
+  box-shadow: 0 8px 16px rgba(76, 175, 80, 0.3);
 }
 
-.login-button:hover {
-  background: #ff6d00;
-  box-shadow: 0px 8px 15px rgba(255, 109, 0, 0.3);
+/* Footer & Registration */
+.login-card-footer {
+  margin-top: 25px;
+  /* Reduced from 35px */
+  text-align: center;
 }
 
-/* Signup Link */
-.signup-link {
-  margin-top: 15px;
-  font-size: 14px;
+.divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  /* Reduced */
 }
 
-.signup-link a {
-  color: #ff9500;
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.divider span {
+  padding: 0 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #aaa;
+}
+
+.register-text {
+  font-size: 0.85rem;
+  color: #777;
+  margin-bottom: 12px;
+}
+
+.registration-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.reg-link {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
   text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.3s ease;
 }
 
-.signup-link a:hover {
-  text-decoration: underline;
+.reg-link i {
+  font-style: normal;
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-  .login-form {
-    padding: 20px;
+.user-reg {
+  background: #f1f8e9;
+  color: #2e7d32;
+  border: 1px solid #c8e6c9;
+}
+
+.shop-reg {
+  background: #ffffff;
+  color: #388e3c;
+  border: 1px solid #eee;
+}
+
+.reg-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  filter: brightness(0.98);
+}
+
+.premium-error {
+  background: #ffebee;
+  color: #c62828;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .login-container {
+    justify-content: center;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .premium-login-card {
+    padding: 35px 25px;
+    margin: 20px;
   }
 
-  .title {
-    font-size: 1.8rem;
-  }
-
-  .input-field {
-    font-size: 14px;
-    padding: 10px 15px;
-  }
-
-  .login-button {
-    font-size: 14px;
+  .premium-title {
+    font-size: 2.2rem;
   }
 }
