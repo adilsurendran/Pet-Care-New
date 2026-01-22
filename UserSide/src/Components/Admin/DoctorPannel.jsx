@@ -152,19 +152,13 @@ const DoctorPannel = () => {
       </main>
 
       {/* Premium Edit Modal */}
-      <AnimatePresence>
         {showModal && (
           <div className="premium-modal-overlay">
-            <motion.div
-              className="premium-modal-card"
-              initial={{ opacity: 0, scale: 0.9, y: 40 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 40 }}
-            >
+<div className="premium-modal-card-doctor">
               <div className="modal-accent"></div>
-              <div className="modal-header">
+              {/* <div className="modal-header">
                 <h3>Edit Practitioner Profile</h3>
-              </div>
+              </div> */}
 
               <div className="modal-form-grid">
                 <div className="modal-input-group">
@@ -240,10 +234,9 @@ const DoctorPannel = () => {
                   Sync Changes
                 </button>
               </div>
-            </motion.div>
+              </div>
           </div>
         )}
-      </AnimatePresence>
     </div>
   );
 };

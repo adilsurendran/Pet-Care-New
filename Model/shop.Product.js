@@ -1,41 +1,97 @@
-// import mongoose from 'mongoose';
+// // import mongoose from 'mongoose';
+
+// // const ProductSchema = new mongoose.Schema({
+// //     ProductName: { type: String, required: true },  
+// //     description: { type: String, required: true },
+// //     price: { type: Number, required: true }, 
+// //     screenshots: { type: [String], required: true },
+// //     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Login', required: true },
+// // });
+
+// // const Product = mongoose.model('Products', ProductSchema);
+// // export default Product;
+// import mongoose from "mongoose";
 
 // const ProductSchema = new mongoose.Schema({
-//     ProductName: { type: String, required: true },  
-//     description: { type: String, required: true },
-//     price: { type: Number, required: true }, 
-//     screenshots: { type: [String], required: true },
-//     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Login', required: true },
+//   ProductName: { type: String, required: true },
+//   description: { type: String, required: true },
+//   price: { type: Number, required: true },
+
+//   quantity: {
+//     type: Number,
+//     required: true,
+//     min: 0,
+//   },
+
+//   available: {
+//     type: Boolean,
+//     default: true, // 🔹 default availability
+//   },
+
+//   screenshots: { type: [String], required: true },
+
+//   userId: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "Login",
+//     required: true,
+//   },
 // });
 
-// const Product = mongoose.model('Products', ProductSchema);
+// const Product = mongoose.model("Products", ProductSchema);
 // export default Product;
+
 import mongoose from "mongoose";
 
-const ProductSchema = new mongoose.Schema({
-  ProductName: { type: String, required: true },
-  description: { type: String, required: true },
-  price: { type: Number, required: true },
+const ProductSchema = new mongoose.Schema(
+  {
+    ProductName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
-  quantity: {
-    type: Number,
-    required: true,
-    min: 0,
+    description: {
+      type: String,
+      required: true,
+    },
+
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    quantity: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    category: {
+      type: String,
+      enum: ["food", "toys", "accessories", "medicine"],
+      required: true,
+    },
+
+    available: {
+      type: Boolean,
+      default: true,
+    },
+
+    screenshots: {
+      type: [String],
+      required: true,
+    },
+
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Login",
+      required: true,
+    },
   },
-
-  available: {
-    type: Boolean,
-    default: true, // 🔹 default availability
-  },
-
-  screenshots: { type: [String], required: true },
-
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Login",
-    required: true,
-  },
-});
+  { timestamps: true }
+);
 
 const Product = mongoose.model("Products", ProductSchema);
 export default Product;
+

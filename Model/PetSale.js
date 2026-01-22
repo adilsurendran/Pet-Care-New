@@ -21,7 +21,9 @@ const petSaleSchema = new Schema(
     age: {
       type: String
     },
-
+gender: {
+      type: String
+    },
     price: {
       type: Number,
       required: true
@@ -29,7 +31,7 @@ const petSaleSchema = new Schema(
 
     status: {
       type: String,
-      enum: ["Available", "Sold"],
+      // enum: ["Available", "Sold"],
       default: "Available"
     },
     image:{

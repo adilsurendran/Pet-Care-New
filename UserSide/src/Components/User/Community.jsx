@@ -115,7 +115,31 @@ export default function Community() {
   const userPosts = posts.filter(post => post.postedBy.userId === userId);
   const otherPosts = posts.filter(post => post.postedBy.userId !== userId);
 
-  const content = (
+
+
+  // if (role === "shop") {
+  //   return (
+  //     <div className="shop-layout">
+  //       <ShopSidebar />
+  //       <main className="shop-main">
+  //         {content}
+  //       </main>
+  //     </div>
+  //   );
+  // }
+
+  // if (role === "doctor") {
+  //   return (
+  //     <div className="doctor-layout">
+  //       <DoctorSidebar />
+  //       <main className="doctor-main">
+  //         {content}
+  //       </main>
+  //     </div>
+  //   );
+  // }
+
+  return (
     <div className="community-container">
       {/* Modal for creating new post */}
       {showModal && (
@@ -417,29 +441,5 @@ export default function Community() {
         </div>
       </div>
     </div>
-  );
-
-  if (role === "shop") {
-    return (
-      <div className="shop-layout">
-        <ShopSidebar />
-        <main className="shop-main">
-          {content}
-        </main>
-      </div>
-    );
-  }
-
-  if (role === "doctor") {
-    return (
-      <div className="doctor-layout">
-        <DoctorSidebar />
-        <main className="doctor-main">
-          {content}
-        </main>
-      </div>
-    );
-  }
-
-  return content;
+  )
 }

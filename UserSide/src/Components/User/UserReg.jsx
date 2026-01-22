@@ -12,11 +12,16 @@ const UserReg = () => {
     city: "",
     state: "",
     pincode: "",
-    userName: "",
     userPassword: "",
   });
 
   const [errorMessage, setErrorMessage] = useState("");
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const nameRegex = /^[A-Za-z ]{3,}$/;
+const cityStateRegex = /^[A-Za-z ]{2,}$/;
+const pincodeRegex = /^[0-9]{6}$/;
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,32 +31,98 @@ const UserReg = () => {
     }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage("");
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setErrorMessage("");
 
-    try {
-      const response = await fetch("http://localhost:5000/api/userregistration", {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/api/userregistration", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(formData),
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (response.ok) {
+  //       alert("User registered successfully!");
+  //       navigate("/login");
+  //     } else {
+  //       setErrorMessage(data.message || "Registration failed.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error during registration:", error);
+  //     setErrorMessage("An unexpected error occurred. Please try again.");
+  //   }
+  // };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setErrorMessage("");
+const {
+    userFullname,
+    userEmail,
+    city,
+    state,
+    pincode,
+    userPassword
+  } = formData;
+
+  // ===== VALIDATIONS =====
+  if (!nameRegex.test(userFullname.trim())) {
+    return setErrorMessage("Full name must contain only letters and be at least 3 characters.");
+  }
+
+  if (!emailRegex.test(userEmail.trim().toLowerCase())) {
+    return setErrorMessage("Please enter a valid email address.");
+  }
+
+  if (!cityStateRegex.test(city.trim())) {
+    return setErrorMessage("City must contain only letters and be at least 2 characters.");
+  }
+
+  if (!cityStateRegex.test(state.trim())) {
+    return setErrorMessage("State must contain only letters and be at least 2 characters.");
+  }
+
+  if (!pincodeRegex.test(pincode.trim())) {
+    return setErrorMessage("Pincode must be exactly 6 digits.");
+  }
+
+  // Password → only required (HTML handles required attribute)
+  if (!userPassword) {
+    return setErrorMessage("Password is required.");
+  }
+
+  try {
+    const payload = {
+      ...formData,
+      userName: formData.userEmail, // ✅ email becomes username
+    };
+
+    const response = await fetch(
+      "http://localhost:5000/api/userregistration",
+      {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("User registered successfully!");
-        navigate("/login");
-      } else {
-        setErrorMessage(data.message || "Registration failed.");
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       }
-    } catch (error) {
-      console.error("Error during registration:", error);
-      setErrorMessage("An unexpected error occurred. Please try again.");
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("User registered successfully!");
+      navigate("/login");
+    } else {
+      setErrorMessage(data.message || "Registration failed.");
     }
-  };
+  } catch (error) {
+    console.error("Error during registration:", error);
+    setErrorMessage("An unexpected error occurred. Please try again.");
+  }
+};
 
   return (
     <div className="reg-page-wrapper">
@@ -135,7 +206,7 @@ const UserReg = () => {
                   required
                 />
               </div>
-              <div className="reg-input-group">
+              {/* <div className="reg-input-group">
                 <label>Username</label>
                 <input
                   type="text"
@@ -145,7 +216,7 @@ const UserReg = () => {
                   placeholder="Choose username"
                   required
                 />
-              </div>
+              </div> */}
             </div>
 
             <div className="reg-input-group">

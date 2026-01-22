@@ -22,7 +22,7 @@ const ShopSidebar = () => {
         { title: "Dashboard", path: "/shopdash", icon: <FaChartPie /> },
         { title: "Manage Products", path: "/manage-products", icon: <FaBoxOpen /> },
         { title: "Orders", path: "/vieworders", icon: <FaClipboardList /> },
-        { title: "Community", path: "/community", icon: <FaUsers /> },
+        { title: "Community", path: "/shop/community", icon: <FaUsers /> },
     ];
 
     return (

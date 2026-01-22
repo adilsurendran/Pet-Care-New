@@ -22,6 +22,6 @@ const chatSchema = new mongoose.Schema(
 );
 
 // 🔒 Enforce one chat per buyer-doctor pair
-chatSchema.index({ buyerId: 1, doctorId: 1 }, { unique: true });
+chatSchema.index({ userId: 1, doctorId: 1 }, { unique: true });
 
 export default mongoose.model("Chat", chatSchema);

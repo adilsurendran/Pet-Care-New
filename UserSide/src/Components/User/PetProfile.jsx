@@ -68,13 +68,14 @@ export default function PetProfile() {
         if (form[key]) formdata.append(key, form[key]);
       });
 
-      await axios.post(
+     const res = await axios.post(
         `http://localhost:5000/api/pets/add/${userId}`,
         formdata,
         {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
+console.log(res);
 
       setShowAddModal(false);
       resetForm();
@@ -99,6 +100,8 @@ export default function PetProfile() {
       const res = await axios.get(
         `http://localhost:5000/api/pets/${petId}`
       );
+      console.log(res);
+      
       setEditForm(res.data);
       setShowEditModal(true);
     } catch (err) {
@@ -106,21 +109,57 @@ export default function PetProfile() {
     }
   };
 
-  const updatePet = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.put(
-        `http://localhost:5000/api/pets/${editForm._id}`,
-        editForm
-      );
-      setShowEditModal(false);
-      setSelectedPet(null);
-      fetchPets();
-    } catch (err) {
-      console.error("Update failed", err);
-      alert("Failed to update pet");
-    }
-  };
+  const handleEditChange = (e) => {
+  const { name, value } = e.target;
+  setEditForm(prev => ({ ...prev, [name]: value }));
+};
+
+const handleEditImageChange = (e) => {
+  setEditForm(prev => ({ ...prev, image: e.target.files[0] }));
+};
+
+
+  // const updatePet = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     await axios.put(
+  //       `http://localhost:5000/api/pets/${editForm._id}`,
+  //       editForm
+  //     );
+  //     setShowEditModal(false);
+  //     setSelectedPet(null);
+  //     fetchPets();
+  //   } catch (err) {
+  //     console.error("Update failed", err);
+  //     alert("Failed to update pet");
+  //   }
+  // };
+const updatePet = async (e) => {
+  e.preventDefault();
+
+  try {
+    const formData = new FormData();
+    Object.keys(editForm).forEach(key => {
+      if (editForm[key]) formData.append(key, editForm[key]);
+    });
+
+   const res= await axios.put(
+      `http://localhost:5000/api/pets/${editForm._id}`,
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+console.log(res);
+console.log(formData);
+
+
+    setShowEditModal(false);
+    setSelectedPet(null);
+    fetchPets();
+  } catch (err) {
+    console.error("Update failed", err);
+    alert("Failed to update pet");
+  }
+};
 
   /* ============================
      DELETE PET
@@ -269,6 +308,147 @@ export default function PetProfile() {
             </div>
           </div>
         )}
+
+        {/* EDIT PET MODAL */}
+{showEditModal && (
+  <div style={{
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.5)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 3000
+  }}>
+    <div style={{
+      background: "white",
+      padding: "30px",
+      borderRadius: "20px",
+      width: "500px",
+      maxHeight: "90vh",
+      overflowY: "auto",
+      boxShadow: "0 20px 50px rgba(0,0,0,0.2)"
+    }}>
+      <h3>Edit Pet</h3>
+
+      <form onSubmit={updatePet} style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+        <input
+          name="name"
+          value={editForm.name || ""}
+          onChange={handleEditChange}
+          placeholder="Pet Name"
+          className="premium-input"
+          required
+        />
+
+        <input
+          name="breed"
+          value={editForm.breed || ""}
+          onChange={handleEditChange}
+          placeholder="Breed"
+          className="premium-input"
+          required
+        />
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
+          <input
+            name="ageYears"
+            value={editForm.ageYears || ""}
+            onChange={handleEditChange}
+            placeholder="Years"
+            className="premium-input"
+          />
+          <input
+            name="ageMonths"
+            value={editForm.ageMonths || ""}
+            onChange={handleEditChange}
+            placeholder="Months"
+            className="premium-input"
+          />
+        </div>
+
+        <select
+          name="sex"
+          value={editForm.sex || ""}
+          onChange={handleEditChange}
+          className="premium-input"
+          required
+        >
+          <option value="">Select Sex</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+
+        <input
+          type="date"
+          name="purchaseDate"
+          value={editForm.purchaseDate?.slice(0, 10) || ""}
+          onChange={handleEditChange}
+          className="premium-input"
+        />
+
+        <input
+          type="date"
+          name="lastVaccination"
+          value={editForm.lastVaccination?.slice(0, 10) || ""}
+          onChange={handleEditChange}
+          className="premium-input"
+        />
+
+        <input
+          name="weight"
+          value={editForm.weight || ""}
+          onChange={handleEditChange}
+          placeholder="Weight (kg)"
+          className="premium-input"
+        />
+
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleEditImageChange}
+          className="premium-input"
+        />
+
+        <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+          <button
+            type="submit"
+            style={{
+              flex: 1,
+              padding: "12px",
+              background: "var(--user-primary)",
+              color: "white",
+              border: "none",
+              borderRadius: "10px",
+              fontWeight: "700",
+              cursor: "pointer"
+            }}
+          >
+            Update
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowEditModal(false)}
+            style={{
+              flex: 1,
+              padding: "12px",
+              background: "#f1f5f9",
+              color: "#64748b",
+              border: "none",
+              borderRadius: "10px",
+              fontWeight: "700",
+              cursor: "pointer"
+            }}
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
+
 
       </main>
     </div>

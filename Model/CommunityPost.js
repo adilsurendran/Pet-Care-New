@@ -17,7 +17,7 @@ const communityPostSchema = new mongoose.Schema(
     postedBy: {
       userId: { type: mongoose.Schema.Types.ObjectId },
       userFullname: String,
-      role: { type: String, enum: ["user", "Shop", "Doctor"] }
+      role: { type: String, enum: ["user", "shop", "doctor"] }
     },
     likes: [{ type: mongoose.Schema.Types.ObjectId }],
     comments: [commentSchema]

@@ -21,6 +21,7 @@ const shopSchema = new Schema({
         type:String,
         required:true
     },
+    shopLogo:{type:String}
 })
 
 const shopdata = mongoose.model('Shop', shopSchema)

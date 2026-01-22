@@ -22,6 +22,7 @@ export default function PetMarketplace() {
     breed: "",
     age: "",
     price: "",
+    gender:"",
     image: null
   });
 
@@ -36,6 +37,8 @@ export default function PetMarketplace() {
       const res = await axios.get(
         `http://localhost:5000/api/pets/sell/${userId}`
       );
+      console.log(res);
+      
       setPets(res.data || []);
     } catch (err) {
       console.error(err);
@@ -149,6 +152,7 @@ export default function PetMarketplace() {
       breed: p.breed,
       age: p.age,
       price: p.price,
+      gender: p.gender,
       image: null
     });
     setShowModal(true);
@@ -162,6 +166,7 @@ export default function PetMarketplace() {
       breed: "",
       age: "",
       price: "",
+      gender: "",
       image: null
     });
   };
@@ -255,6 +260,7 @@ export default function PetMarketplace() {
                     </div>
                   </div>
                   <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '5px' }}><strong>Breed:</strong> {p.breed}</p>
+                  <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '5px' }}><strong>gender:</strong> {p.gender}</p>
                   <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '15px' }}><strong>Age:</strong> {p.age || "-"}</p>
 
                   <button
@@ -353,6 +359,7 @@ export default function PetMarketplace() {
               <form onSubmit={submitPet} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                 <input placeholder="Pet Name" required value={sellForm.name} onChange={(e) => setSellForm({ ...sellForm, name: e.target.value })} style={{ padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1' }} />
                 <input placeholder="Breed" required value={sellForm.breed} onChange={(e) => setSellForm({ ...sellForm, breed: e.target.value })} style={{ padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1' }} />
+                <input placeholder="gender" required value={sellForm.gender} onChange={(e) => setSellForm({ ...sellForm, gender: e.target.value })} style={{ padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1' }} />
                 <input placeholder="Age" value={sellForm.age} onChange={(e) => setSellForm({ ...sellForm, age: e.target.value })} style={{ padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1' }} />
                 <input placeholder="Price" required value={sellForm.price} onChange={(e) => setSellForm({ ...sellForm, price: e.target.value })} style={{ padding: '12px', borderRadius: '10px', border: '1px solid #cbd5e1' }} />
                 <input type="file" accept="image/*" onChange={(e) => setSellForm({ ...sellForm, image: e.target.files[0] })} style={{ padding: '10px' }} />

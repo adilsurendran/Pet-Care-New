@@ -24,28 +24,29 @@ const PetSchema = new mongoose.Schema(
       type: Date
     },
 
-    ageYears: {
-      type: Number,
-      default: 0
+    petType: {
+      type: String,
     },
 
-    ageMonths: {
-      type: Number,
-      default: 0
+    notes: {
+      type: String,
     },
 
     sex: {
       type: String,
-      enum: ["Male", "Female"],
       required: true
     },
 
     lastVaccination: {
-      type: Date
+      type: Date,
+      default:null
     },
 
     weight: {
-      type: Number // in KG
+      type: String // in KG
+    },
+    weightunit: {
+      type: String // in KG
     },
     image:{type:String}
   },

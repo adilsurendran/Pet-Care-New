@@ -20,7 +20,7 @@ const DoctorSidebar = () => {
         { title: "My Guides", path: "/suggestion", icon: <FaBookMedical /> },
         { title: "Add Guide", path: "/addguides", icon: <FaCommentAlt /> },
         { title: "Chat Center", path: "/doctor/chat", icon: <FaComments /> },
-        { title: "Community", path: "/community", icon: <FaUsers /> },
+        { title: "Community", path: "/doctor/community", icon: <FaUsers /> },
     ];
 
     return (

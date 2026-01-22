@@ -45,6 +45,8 @@ import PetProfile from './Components/User/PetProfile';
 import UserProfile from './Components/User/UserProfile';
 import PetMarketplace from './Components/User/PetMarketplace';
 import Community from './Components/User/Community';
+import ShopLayout from './Components/Shop/ShopLayout';
+import DoctorLayout from './Components/Doctor/DoctorLayout';
 
 
 
@@ -98,7 +100,24 @@ function App() {
           <Route path='/community' element={<Community />} />
 
 
+ <Route
+        path="/shop/community"
+        element={
+          <ShopLayout>
+            <Community />
+          </ShopLayout>
+        }
+      />
 
+      {/* DOCTOR MODULE */}
+      <Route
+        path="/doctor/community"
+        element={
+          <DoctorLayout>
+            <Community />
+          </DoctorLayout>
+        }
+      />
 
         </Routes>
       </Router>

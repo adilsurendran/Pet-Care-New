@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import UserSidebar from "./UserSidebar";
 import "./UserPremium.css";
 import "./ChatPage.css"; // Keeping default chat styles for layout specifics, or override if needed
-import { FaPaperPlane, FaUserCircle } from "react-icons/fa";
+import { FaComments, FaPaperPlane, FaUserCircle } from "react-icons/fa";
 
 const ChatPage = () => {
   const { doctorLoginId } = useParams();

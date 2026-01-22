@@ -103,7 +103,7 @@ const Login = () => {
         >
           <div className="login-card-header">
             <h1 className="premium-title">W<span>oo</span>fTale</h1>
-            <p className="premium-subtitle">Your pet's happiness starts here</p>
+            <p className="premium-subtitle text-light">Your pet's happiness starts here</p>
           </div>
 
           {error && (
@@ -118,7 +118,7 @@ const Login = () => {
 
           <form onSubmit={handleLogin} className="premium-form">
             <div className="premium-input-group">
-              <label>Username</label>
+              <label className="text-light">Username</label>
               <input
                 type="text"
                 placeholder="Enter your username"
@@ -129,7 +129,7 @@ const Login = () => {
             </div>
 
             <div className="premium-input-group">
-              <label>Password</label>
+              <label className="text-light">Password</label>
               <input
                 type="password"
                 placeholder="Enter your password"

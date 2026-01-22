@@ -1,18 +1,19 @@
 import express from 'express';
-import { acceptBooking, acceptOrderBooking, addComment, addGameAccount, addGuide, addPet, addPetForSale, AddtoCart, bookDoctor, bookProduct, buyPet, cancelOrderBooking, createOrGetChat, createPost, deleteDoctor, deleteGuide, deletePet, DeletePetsForSale, deletePost, deleteProduct, DeleteUser, deliverOrderBooking, doctorRegistration, EditPetForSale, editProduct, getAllBuyers, getAlldoct, getAllPosts, getAllProducts, getAllShops, getAllUsers, getBuyerOrders, getChatList, getDocBooking, getDoctorChatList, getMessages, getMyPetsForSale, getOrdersByUser, getPetById, getPetsForSale, getSellerOrders, getUserPets, getUserProfile, login, refillMoney, RejectBooking, RejectOrderBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleLike, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateCartQuantity, updateDoctor, updateOrderStatus, updatePet, updateUserProfile, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
+import { acceptBooking, acceptOrderBooking, addComment, addGuide, addPet, addPetForSale, addProduct, AddtoCart, bookDoctor, bookProduct, buyPet, cancelOrderBooking, createOrGetChat, createPost, deleteDoctor, deleteGuide, deletePet, DeletePetsForSale, deletePost, deleteProduct, DeleteUser, deliverOrderBooking, doctorRegistration, EditPetForSale, editProduct, getAllBuyers, getAlldoct, getAllPosts, getAllProducts, getAllShops, getAllShopswithavailableProducts, getAllUsers, getBuyerOrders, getChatList, getDocBooking, getDoctorChatList, getMessages, getMyPetsForSale, getOrdersByUser, getPetById, getPetsForSale, getSellerOrders, getUserPets, getUserProfile, login, refillMoney, RejectBooking, RejectOrderBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleLike, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateCartQuantity, updateDoctor, updateOrderStatus, updatePet, updateUserProfile, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
 import upload from '../middleware/upload.js'; 
 
 
 const route = express.Router();
 
 route.post('/userregistration', userRegistration);
-route.post('/doctorreg', doctorRegistration)
+route.post('/doctorreg',upload.single("doctorImage"), doctorRegistration)
 route.get('/getallusers', getAllUsers)
 route.get('/getalldoctors', getAlldoct)
 // route.post('/addproduct/:id', upload.array('productImages'), AddProduct);
 // route.post('/addproduct/:id', AddProduct);
-route.post('/shopreg', shopRegistration)
+route.post('/shopreg',upload.single("shopLogo"), shopRegistration)
 route.get('/shops', getAllShops)
+route.get('/shops/withProduct', getAllShopswithavailableProducts)
 route.delete('/delete/:id', DeleteUser)
 route.post('/login', login)
 route.post('/refill/:id', refillMoney)
@@ -26,7 +27,20 @@ route.put('/reject/:bookingId', RejectBooking);
 route.get("/todaysappointments/:doctorId", TodaysAppointment);
 route.post("/addguide", addGuide)
 route.get("/viewguides", ViewGuide)
-route.post('/addgameaccount/:userId', upload.fields([{ name: 'screenshots', maxCount: 100 }]), addGameAccount);
+// route.post('/addproduct/:userId', upload.fields([{ name: 'screenshots', maxCount: 100 }]), addGameAccount);
+/* ADD PRODUCT */
+route.post(
+  "/addproduct/:userId",
+  upload.fields([{ name: "screenshots", maxCount: 10 }]),
+  addProduct
+);
+
+/* EDIT PRODUCT */
+route.put(
+  "/editproduct/:productId",
+  upload.fields([{ name: "screenshots", maxCount: 10 }]),
+  editProduct
+);
 route.get('/getpro/:userId', viewProductsByUserId)
 route.delete('/deletepro/:productId', deleteProduct)
 route.get('/allpro', getAllProducts)
@@ -40,7 +54,7 @@ route.post("/cancelorder/:bookingId", cancelOrderBooking);
 route.post('/add-to-cart/:id', AddtoCart)
 route.put('/cart/update-quantity/:userId/:productId',updateCartQuantity)
 route.get('/getbuyers', getAllBuyers)
-route.put('/editProduct/:productId',upload.fields([{ name: "screenshots", maxCount: 100 }]), editProduct)
+// route.put('/editProduct/:productId',upload.fields([{ name: "screenshots", maxCount: 100 }]), editProduct)
 route.get('/viewProduct/:productId', viewProductById)
 route.get('/getreply/:userId', viewComplaintandReplyByUser)
 route.delete('/deleteguide/:guideId', deleteGuide)
@@ -75,7 +89,7 @@ route.get(
 route.post("/pets/add/:ownerId",upload.single("image"), addPet);
 route.get("/pets/user/:ownerId", getUserPets);
 route.get("/pets/:petId", getPetById);
-route.put("/pets/:petId", updatePet);
+route.put("/pets/:petId",upload.single("image"), updatePet);
 route.delete("/pets/:petId", deletePet);
 
 route.get("/users/profile/:userId", getUserProfile);
@@ -85,7 +99,7 @@ route.get("/pets/sell/:userId", getPetsForSale);
 route.get("/sell/mypets/:userId", getMyPetsForSale);
 
 route.post("/sell/:userId",upload.single("image"),addPetForSale);
-route.put("/sell/:userId",upload.single("image"),EditPetForSale);
+route.put("/sell/:id",upload.single("image"),EditPetForSale);
 route.delete("/sell/:userId",DeletePetsForSale);
 
 route.post("/buy", buyPet);

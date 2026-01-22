@@ -10,7 +10,7 @@ import DocBooking from '../Model/DoctorBookingModel.js';
 
 /* function for user registration and username, password and role need to store in the backend */
 export const userRegistration = async (req, res) => {
-    const { userFullname, userEmail, city, state, pincode, userName, userPassword } = req.body;
+    const { userFullname, userEmail, city, state, pincode, userPassword,age,gender,phone } = req.body;
     console.log(req.body);
 
     if (
@@ -19,8 +19,8 @@ export const userRegistration = async (req, res) => {
         !city ||
         !state ||
         !pincode ||
-        !userName ||
-        !userPassword
+        !userPassword ||
+        !age || !phone || !gender
     ) {
         return res.status(400).json({ message: "Please fill all fields" });
     }
@@ -29,7 +29,7 @@ export const userRegistration = async (req, res) => {
 
     try {
         const existingUser = await userData.findOne({ userEmail });
-        const existingUserName = await loginData.findOne({ username: userName });  
+        const existingUserName = await loginData.findOne({ username: userEmail });  
         
         if (existingUserName) {
             console.log("Username is already taken");
@@ -44,19 +44,22 @@ export const userRegistration = async (req, res) => {
         const hashedPassword = await bcrypt.hash(userPassword, 10);
 
         const login = await loginData.create({
-            username: userName,  
+            username: userEmail,  
             password: hashedPassword,
-            role: "user",  // Save the role as buyer or seller
+            role: "user",  
             verify: true
 });
 
-       const Newuser = await userData.create({
+       await userData.create({
             commonKey: login._id,
             userFullname,
             userEmail,
             city,
             state,
             pincode,
+            age,
+            gender,
+            phone
         });
 
         res.status(201).json({ message: "User created successfully", success: true });
@@ -68,55 +71,136 @@ export const userRegistration = async (req, res) => {
 
 
 /* function for registration and username, password and role need to store in the Login table */
-export const doctorRegistration = async(req, res) => {
-    const { doctorName, doctorEmail, doctorNumber, doctorAddress, doctorQualification, userName, userPassword } = req.body
+// export const doctorRegistration = async(req, res) => {
+//     const { doctorName, doctorEmail, doctorNumber, doctorAddress, doctorQualification, userName, userPassword } = req.body
 
-    if (
-        !doctorName ||
-        !doctorEmail ||
-        !doctorNumber ||
-        !doctorAddress ||
-        !doctorQualification ||
-        !userName ||
-        !userPassword
-    ){
-        return res.status(400).json({ message: "please fill all fields", success:false });
-    }
+//     if (
+//         !doctorName ||
+//         !doctorEmail ||
+//         !doctorNumber ||
+//         !doctorAddress ||
+//         !doctorQualification ||
+//         !userName ||
+//         !userPassword
+//     ){
+//         return res.status(400).json({ message: "please fill all fields", success:false });
+//     }
 
-    try {
-        const existingDoctor = await doctData.findOne({ doctorEmail })
-        const existingUserName = await loginData.findOne({ username: userName }) 
+//     try {
+//         const existingDoctor = await doctData.findOne({ doctorEmail })
+//         const existingUserName = await loginData.findOne({ username: userName }) 
 
-        if(existingDoctor){
-            return res.status(400).json({ message: "Doctor with same email exist" })
-        }
-        if (existingUserName){
-            return res.status(400).json({ message: "Username already taken by other user", success:false })
-        }
+//         if(existingDoctor){
+//             return res.status(400).json({ message: "Doctor with same email exist" })
+//         }
+//         if (existingUserName){
+//             return res.status(400).json({ message: "Username already taken by other user", success:false })
+//         }
         
-        const hashedPassword = await bcrypt.hash(userPassword, 10)
-        const login = await loginData.create({
-            username: userName,
-            password: hashedPassword,
-            role: "doctor",
-            verify: true
-        })
+//         const hashedPassword = await bcrypt.hash(userPassword, 10)
+//         const login = await loginData.create({
+//             username: userName,
+//             password: hashedPassword,
+//             role: "doctor",
+//             verify: true
+//         })
 
-        await doctData.create({
-            commonkey: login._id,
-            doctorName,
-            doctorEmail,
-            doctorNumber,
-            doctorAddress,
-            doctorQualification,
-        })
-        res.status(201).json({ message: "User created successfully", success:true });
+//         await doctData.create({
+//             commonkey: login._id,
+//             doctorName,
+//             doctorEmail,
+//             doctorNumber,
+//             doctorAddress,
+//             doctorQualification,
+//         })
+//         res.status(201).json({ message: "User created successfully", success:true });
 
-    } catch (error) {
-        console.log(error.message);
-        return res.status(500).json({ message:"server error", success:false })
+//     } catch (error) {
+//         console.log(error.message);
+//         return res.status(500).json({ message:"server error", success:false })
+//     }
+// }
+
+
+
+export const doctorRegistration = async (req, res) => {
+  try {
+    const {
+      doctorName,
+      doctorEmail,
+      doctorNumber,
+      doctorAddress,
+      doctorQualification,
+      doctorExperience,
+      doctorAbout,
+      userPassword,
+    } = req.body;
+
+    // multer adds file here
+    const doctorImage = req.file ? req.file.path : null;
+
+    // Validation
+    if (
+      !doctorName ||
+      !doctorEmail ||
+      !doctorNumber ||
+      !doctorAddress ||
+      !doctorQualification ||
+      !doctorExperience ||
+      !doctorAbout ||
+      !userPassword ||
+      !doctorImage
+    ) {
+      return res.status(400).json({
+        message: "Please fill all fields",
+        success: false,
+      });
     }
-}
+
+    // Check doctor email
+    const existingDoctor = await loginData.findOne({ username:doctorEmail });
+    if (existingDoctor) {
+      return res
+        .status(400)
+        .json({ message: "Doctor with same email exists", success: false });
+    }
+
+    // Create login entry
+    const hashedPassword = await bcrypt.hash(userPassword, 10);
+
+    const login = await loginData.create({
+      username:doctorEmail,
+      password: hashedPassword,
+      role: "doctor",
+      verify: true,
+    });
+
+    // Create doctor entry
+    await doctData.create({
+      commonkey: login._id,
+      doctorName,
+      doctorEmail,
+      doctorNumber,
+      doctorAddress,
+      doctorQualification,
+      doctorExperience,
+      doctorAbout,
+      doctorImage,
+    });
+
+    res.status(201).json({
+      message: "Doctor registered successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Server error",
+      success: false,
+    });
+  }
+};
+
 
 /* function to get all users */
 export const getAllUsers = async (req, res) => {
@@ -193,7 +277,8 @@ export const shopRegistration = async (req, res) => {
             shopName: shopName,
             shopAddress: shopAddress,
             shopPhone: shopPhone,
-            shopEmail: shopEmail
+            shopEmail: shopEmail,
+            shopLogo: req.file?.path,
         })
         res.status(200).json({ message: "Shop registered Successfully", success:true })
     } catch (error) {
@@ -213,12 +298,153 @@ export const getAllShops = async (req, res) => {
 }
 
 
+// export const getAllShopswithavailableProducts = async (req, res) => {
+//   try {
+//     const shops = await shopdata.aggregate([
+//       {
+//         // Join products with shops
+//         $lookup: {
+//           from: "products", // MongoDB collection name (lowercase + plural)
+//           let: { loginId: "$commonkey" },
+//           pipeline: [
+//             {
+//               $match: {
+//                 $expr: {
+//                   $and: [
+//                     { $eq: ["$userId", "$$loginId"] },
+//                     { $gt: ["$quantity", 0] }, // ✅ quantity > 0
+//                   ],
+//                 },
+//               },
+//             },
+//           ],
+//           as: "products",
+//         },
+//       },
+//       {
+//         // Optional: populate verify field from Login
+//         $lookup: {
+//           from: "logins",
+//           localField: "commonkey",
+//           foreignField: "_id",
+//           as: "login",
+//         },
+//       },
+//       {
+//         $unwind: {
+//           path: "$login",
+//           preserveNullAndEmptyArrays: true,
+//         },
+//       },
+//       {
+//         $project: {
+//           shopName: 1,
+//           shopAddress: 1,
+//           shopPhone: 1,
+//           shopEmail: 1,
+//           products: 1,
+//           verify: "$login.verify",
+//         },
+//       },
+//     ]);
+
+//     res.status(200).json({
+//       success: true,
+//       shops,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//     });
+//   }
+// };
+
+export const getAllShopswithavailableProducts = async (req, res) => {
+  try {
+    const shops = await shopdata.aggregate([
+      // 1️⃣ Join products (only quantity > 0)
+      {
+        $lookup: {
+          from: "products",
+          let: { loginId: "$commonkey" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$userId", "$$loginId"] },
+                    { $gt: ["$quantity", 0] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: "products",
+        },
+      },
+
+      // 2️⃣ Join login data
+      {
+        $lookup: {
+          from: "logins",
+          localField: "commonkey",
+          foreignField: "_id",
+          as: "login",
+        },
+      },
+
+      // 3️⃣ Convert login array → object
+      {
+        $unwind: {
+          path: "$login",
+          preserveNullAndEmptyArrays: false,
+        },
+      },
+
+      // 4️⃣ ✅ FILTER ONLY VERIFIED SHOPS
+      {
+        $match: {
+          "login.verify": true,
+        },
+      },
+
+      // 5️⃣ Shape response
+      {
+        $project: {
+          shopName: 1,
+          shopAddress: 1,
+          shopPhone: 1,
+          shopEmail: 1,
+          shopLogo: 1,
+          products: 1,
+          verify: "$login.verify",
+        },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      shops,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
 
 
 
 export const login = async (req, res) => {
     try {
         const { username, password } = req.body;
+        console.log(req.body);
+        
 
         // Find user by username
         const user = await loginData.findOne({ username });
@@ -348,7 +574,7 @@ export const ViewComplaints = async (req, res) => {
         }
 
         // Check if user exists
-        const userExists = await loginData.findById(userId);
+        const userExists = await userData.findById(userId);
         if (!userExists) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
@@ -383,17 +609,13 @@ export const viewComplaintandReplyByUser = async (req, res) => {
         }
 
         // Fetch user details
-        const user = await loginData.findById(userId);
+        const user = await userData.findById(userId);
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
         // Fetch complaints for the given userId
         const complaints = await Complaint.find({ userId });
-
-        if (!complaints.length) {
-            return res.status(404).json({ success: false, message: "No complaints found for this user" });
-        }
 
         return res.status(200).json({ 
             success: true, 
@@ -743,53 +965,138 @@ export const ViewGuide = async (req, res) => {
 
   // function to view product by the userid
 
-export const addGameAccount = async (req, res) => {
+// export const addGameAccount = async (req, res) => {
+//   try {
+//     const { description, price, ProductName, quantity } = req.body;
+//     const userId = req.params.userId;
+
+//     // 🔴 Validation
+//     if (!description || !price || !ProductName || quantity === undefined) {
+//       return res.status(400).json({
+//         message: "Product name, description, price and quantity are required",
+//       });
+//     }
+
+//     // Extract screenshots
+//     const screenshots = req.files?.screenshots
+//       ? req.files.screenshots.map((file) => file.filename)
+//       : [];
+
+//     if (screenshots.length === 0) {
+//       return res.status(400).json({ message: "At least one screenshot required" });
+//     }
+
+//     // 🔹 Availability logic
+//     const available = Number(quantity) > 0;
+
+//     const newProduct = new Product({
+//       userId,
+//       ProductName,
+//       description,
+//       price,
+//       quantity,
+//       available,
+//       screenshots,
+//     });
+
+//     await newProduct.save();
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Product added successfully",
+//       product: newProduct,
+//     });
+//   } catch (error) {
+//     console.error("ADD PRODUCT ERROR:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Error adding product",
+//     });
+//   }
+// };
+
+export const addProduct = async (req, res) => {
   try {
-    const { description, price, ProductName, quantity } = req.body;
+    const { ProductName, description, price, quantity, category } = req.body;
     const userId = req.params.userId;
 
-    // 🔴 Validation
-    if (!description || !price || !ProductName || quantity === undefined) {
-      return res.status(400).json({
-        message: "Product name, description, price and quantity are required",
-      });
+    if (!ProductName || !description || !price || !quantity || !category) {
+      return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Extract screenshots
     const screenshots = req.files?.screenshots
-      ? req.files.screenshots.map((file) => file.filename)
+      ? req.files.screenshots.map((f) => f.filename)
       : [];
 
     if (screenshots.length === 0) {
-      return res.status(400).json({ message: "At least one screenshot required" });
+      return res.status(400).json({ message: "At least one image required" });
     }
 
-    // 🔹 Availability logic
     const available = Number(quantity) > 0;
 
-    const newProduct = new Product({
-      userId,
+    const product = new Product({
       ProductName,
       description,
       price,
       quantity,
-      available,
+      category,
       screenshots,
+      available,
+      userId,
     });
 
-    await newProduct.save();
+    await product.save();
 
     res.status(201).json({
       success: true,
       message: "Product added successfully",
-      product: newProduct,
+      product,
     });
-  } catch (error) {
-    console.error("ADD PRODUCT ERROR:", error);
-    res.status(500).json({
-      success: false,
-      message: "Error adding product",
+  } catch (err) {
+    console.error("ADD PRODUCT ERROR:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+/* ===============================
+   EDIT PRODUCT
+================================ */
+export const editProduct = async (req, res) => {
+  console.log("hiiiiiiiiiiiiiiii");
+  
+  try {
+    const { ProductName, description, price, quantity, category } = req.body;
+    const productId = req.params.productId;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    // If new images uploaded → replace, else keep old
+    let screenshots = product.screenshots;
+    if (req.files?.screenshots?.length > 0) {
+      screenshots = req.files.screenshots.map((f) => f.filename);
+    }
+
+    product.ProductName = ProductName;
+    product.description = description;
+    product.price = price;
+    product.quantity = quantity;
+    product.category = category;
+    product.available = Number(quantity) > 0;
+    product.screenshots = screenshots;
+
+    await product.save();
+
+    res.json({
+      success: true,
+      message: "Product updated successfully",
+      product,
     });
+  } catch (err) {
+    console.error("EDIT PRODUCT ERROR:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -1617,55 +1924,55 @@ export const RemoveItemFromCart = async (req, res) => {
 
 // function to vieww product by id to update
 
-export const editProduct = async (req, res) => {
-  try {
-    const { productId } = req.params;
-    const { ProductName, description, price, quantity } = req.body;
+// export const editProduct = async (req, res) => {
+//   try {
+//     const { productId } = req.params;
+//     const { ProductName, description, price, quantity } = req.body;
 
-    // 1️⃣ Find product
-    const product = await Product.findById(productId);
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product not found",
-      });
-    }
+//     // 1️⃣ Find product
+//     const product = await Product.findById(productId);
+//     if (!product) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Product not found",
+//       });
+//     }
 
-    // 2️⃣ Handle screenshots (replace only if new uploaded)
-    let screenshots = product.screenshots;
-    if (req.files && req.files.screenshots) {
-      screenshots = req.files.screenshots.map((file) => file.filename);
-    }
+//     // 2️⃣ Handle screenshots (replace only if new uploaded)
+//     let screenshots = product.screenshots;
+//     if (req.files && req.files.screenshots) {
+//       screenshots = req.files.screenshots.map((file) => file.filename);
+//     }
 
-    // 3️⃣ Quantity & availability logic
-    const qty = quantity !== undefined ? Number(quantity) : product.quantity;
-    const available = qty > 0;
+//     // 3️⃣ Quantity & availability logic
+//     const qty = quantity !== undefined ? Number(quantity) : product.quantity;
+//     const available = qty > 0;
 
-    // 4️⃣ Update fields safely
-    product.ProductName = ProductName ?? product.ProductName;
-    product.description = description ?? product.description;
-    product.price = price ?? product.price;
-    product.quantity = qty;
-    product.available = available;
-    product.screenshots = screenshots;
+//     // 4️⃣ Update fields safely
+//     product.ProductName = ProductName ?? product.ProductName;
+//     product.description = description ?? product.description;
+//     product.price = price ?? product.price;
+//     product.quantity = qty;
+//     product.available = available;
+//     product.screenshots = screenshots;
 
-    // 🔒 userId intentionally NOT changed
+//     // 🔒 userId intentionally NOT changed
 
-    await product.save();
+//     await product.save();
 
-    res.status(200).json({
-      success: true,
-      message: "Product updated successfully",
-      product,
-    });
-  } catch (error) {
-    console.error("EDIT PRODUCT ERROR:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-};
+//     res.status(200).json({
+//       success: true,
+//       message: "Product updated successfully",
+//       product,
+//     });
+//   } catch (error) {
+//     console.error("EDIT PRODUCT ERROR:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error",
+//     });
+//   }
+// };
 
 
 export const viewProductById = async (req, res) => {
@@ -1928,6 +2235,8 @@ export const toggleProductAvailability = async (req, res) => {
 export const createOrGetChat = async (req, res) => {
   try {
     const { userId, doctorLoginId } = req.body;
+    console.log("userId" ,userId,"doctorLoginId", doctorLoginId);
+    
 
     if (!userId || !doctorLoginId) {
       return res.status(400).json({
@@ -2092,18 +2401,19 @@ export const getDoctorChatList = async (req, res) => {
  * ADD PET
  * Matches frontend addPet() form
  */
-export const addPet = async (req, res) => {
+export const addPet = async (req, res) => {  
   try {
     const { ownerId } = req.params;
     const {
       name,
       breed,
       purchaseDate,
-      ageYears,
-      ageMonths,
+      petType,
+      weightunit,
       sex,
       lastVaccination,
-      weight
+      weight,
+      notes
     } = req.body;
 
     if (!name || !breed || !sex) {
@@ -2118,11 +2428,12 @@ export const addPet = async (req, res) => {
       name,
       breed,
       purchaseDate,
-      ageYears,
-      ageMonths,
+      petType,
+      weightunit,
       sex,
       lastVaccination,
       weight,
+      notes,
       image: image
     });
 
@@ -2131,6 +2442,8 @@ export const addPet = async (req, res) => {
       pet
     });
   } catch (error) {
+    console.log(error);
+    
     res.status(500).json({
       message: "Failed to add pet",
       error: error.message
@@ -2138,12 +2451,10 @@ export const addPet = async (req, res) => {
   }
 };
 
-/**
- * GET ALL PETS OF A USER
- */
 export const getUserPets = async (req, res) => {
   try {
     const { ownerId } = req.params;
+console.log(ownerId);
 
     const pets = await Pet.find({ ownerId }).sort({ createdAt: -1 });
 
@@ -2159,9 +2470,6 @@ export const getUserPets = async (req, res) => {
   }
 };
 
-/**
- * GET SINGLE PET DETAILS
- */
 export const getPetById = async (req, res) => {
   try {
     const pet = await Pet.findById(req.params.petId);
@@ -2179,14 +2487,23 @@ export const getPetById = async (req, res) => {
   }
 };
 
-/**
- * UPDATE PET
- */
 export const updatePet = async (req, res) => {
+  // console.log(req.body);
+  // console.log(req.params);
+  // console.log(req.file);
+  
+  
   try {
+    const updateData = { ...req.body };
+
+    // ✅ If a new image is uploaded, update image field
+    if (req.file) {
+      updateData.image = req.file.path; // or req.file.filename based on your schema
+    }
+
     const pet = await Pet.findByIdAndUpdate(
       req.params.petId,
-      req.body,
+      updateData,
       { new: true }
     );
 
@@ -2194,11 +2511,14 @@ export const updatePet = async (req, res) => {
       return res.status(404).json({ message: "Pet not found" });
     }
 
-    res.json({
+    res.status(200).json({
       message: "Pet updated successfully",
       pet
     });
+
   } catch (error) {
+    console.log(error);
+    
     res.status(500).json({
       message: "Failed to update pet",
       error: error.message
@@ -2228,8 +2548,11 @@ export const deletePet = async (req, res) => {
 
 
 export const getUserProfile = async (req, res) => {
+      console.log(req.params);
+
   try {
     const user = await userData.findById(req.params.userId);
+    
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -2241,6 +2564,8 @@ export const getUserProfile = async (req, res) => {
       message: "Failed to fetch profile",
       error: error.message
     });
+    console.log(error);
+    
   }
 };
 
@@ -2287,7 +2612,7 @@ export const getPetsForSale = async (req, res) => {
     const pets = await PetSale.find({
       sellerId: { $ne: userId },
       status: "Available"
-    });
+    }).populate("sellerId", "userFullname city");
 
     res.json(pets);
   } catch (err) {
@@ -2317,7 +2642,7 @@ export const getMyPetsForSale = async (req, res) => {
 export const addPetForSale = async (req, res) => {
   try {
     const { userId } = req.params;
-    const { name, breed, age, price } = req.body;
+    const { name, breed, age, price,gender } = req.body;
 
     if (!name || !breed || !price) {
       return res.status(400).json({ message: "Missing fields" });
@@ -2329,6 +2654,7 @@ export const addPetForSale = async (req, res) => {
       breed,
       age,
       price,
+      gender,
       image: req.file ? req.file.filename : null // ✅ IMAGE
     });
 
@@ -2342,32 +2668,72 @@ export const addPetForSale = async (req, res) => {
   }
 };
 
+// export const EditPetForSale = async (req, res) => {
+//   try {
+//     const { userId } = req.params;
+//     const { name, breed, age, price } = req.body;
+
+//     if (!name || !breed || !price) {
+//       return res.status(400).json({ message: "Missing fields" });
+//     }
+
+//     const pet = await PetSale.findByIdAndUpdate(userId,{
+//       name,
+//       breed,
+//       age,
+//       price,
+//       // image: req.file ? req.file.filename : null // ✅ IMAGE
+      
+//     });
+
+//     res.status(201).json({
+//       message: "Pet added for sale",
+//       pet
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ message: "Failed to add pet" });
+//   }
+// };
 export const EditPetForSale = async (req, res) => {
   try {
-    const { userId } = req.params;
-    const { name, breed, age, price } = req.body;
+    const { id } = req.params; // ✅ PET ID
+    const { name, breed, age, price,gender } = req.body;
 
     if (!name || !breed || !price) {
       return res.status(400).json({ message: "Missing fields" });
     }
 
-    const pet = await PetSale.findByIdAndUpdate(userId,{
-      name,
-      breed,
-      age,
-      price,
-      image: req.file ? req.file.filename : null // ✅ IMAGE
-    });
+    const pet = await PetSale.findById(id);
+    if (!pet) {
+      return res.status(404).json({ message: "Pet not found" });
+    }
 
-    res.status(201).json({
-      message: "Pet added for sale",
-      pet
+    // ✅ Update basic fields
+    pet.name = name;
+    pet.breed = breed;
+    pet.age = age;
+    pet.price = price;
+    pet.gender = gender;
+
+    // ✅ CRITICAL FIX: update image ONLY if new image uploaded
+    if (req.file) {
+      pet.image = req.file.filename;
+    }
+
+    await pet.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Pet updated successfully",
+      pet,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Failed to add pet" });
+    console.error("EditPetForSale Error:", err);
+    res.status(500).json({ message: "Failed to update pet" });
   }
 };
+
 
 // export const DeletePetsForSale = async (req, res) => {
 //   try {
@@ -2425,6 +2791,8 @@ export const DeletePetsForSale = async (req, res) => {
 export const buyPet = async (req, res) => {
   try {
     const { petId, buyerId } = req.body;
+    console.log("petId",petId,"buyerId",buyerId);
+    
 
     const pet = await PetSale.findById(petId);
     if (!pet) return res.status(404).json({ message: "Pet not found" });
@@ -2556,6 +2924,8 @@ export const updateOrderStatus = async (req, res) => {
 
 /* ================= CREATE POST ================= */
 export const createPost = async (req, res) => {
+  console.log(req.body);
+  
   try {
     const { title, description, userId, userFullname, role } = req.body;
 
@@ -2568,6 +2938,7 @@ export const createPost = async (req, res) => {
 
     res.json(post);
   } catch (err) {
+    console.log(err);
     console.log(err);
     
     res.status(500).json({ message: "Failed to create post" });
