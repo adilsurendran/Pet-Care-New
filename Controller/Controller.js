@@ -1169,15 +1169,65 @@ export const deleteProduct = async (req, res) => {
 
 
 // function to get all the products
+// export const getAllProducts = async (req, res) => {
+//     try {
+//         const products = await Product.find()
+//         res.status(200).json({ success: true, products });
+//         } catch (error) {
+//             console.error("Error fetching products:", error);
+//             res.status(500).json({ success: false, message: "Internal Server Error" });
+//             }
+//         }
 export const getAllProducts = async (req, res) => {
-    try {
-        const products = await Product.find({})
-        res.status(200).json({ success: true, products });
-        } catch (error) {
-            console.error("Error fetching products:", error);
-            res.status(500).json({ success: false, message: "Internal Server Error" });
-            }
-        }
+  try {
+    // 1️⃣ Get all products with login populated
+    const products = await Product.find()
+      .populate("userId", "_id"); // only need id
+      // console.log("products user id - login id",products);
+      
+
+    // 2️⃣ Extract all login IDs
+    const loginIds = products.map(p => p.userId?._id);
+    // console.log("loginIds only--",loginIds);
+    
+
+    // 3️⃣ Fetch shops related to those logins
+    const shops = await shopdata.find({ commonkey: { $in: loginIds } });
+    // console.log(shops);
+    
+
+    // 4️⃣ Create lookup map: loginId -> shopPhone
+    const shopMap = {};
+    shops.forEach(shop => {
+      shopMap[shop.commonkey.toString()] = {
+        shopPhone: shop.shopPhone,
+        shopName: shop.shopName,
+      };
+    });
+    // console.log("shopMap", shopMap);
+    
+
+    // 5️⃣ Attach shopPhone to each product
+    const enrichedProducts = products.map(p => ({
+      ...p.toObject(),
+      shopPhone: shopMap[p.userId?._id?.toString()]?.shopPhone || null,
+      shopName: shopMap[p.userId?._id?.toString()]?.shopName || null,
+    }));
+    // console.log("enrichedProducts",enrichedProducts);
+    
+
+    res.status(200).json({
+      success: true,
+      products: enrichedProducts,
+    });
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 // function to book product by user
 // export const bookProduct = async (req, res) => {
@@ -2244,9 +2294,13 @@ export const createOrGetChat = async (req, res) => {
         message: "userId and doctorLoginId are required",
       });
     }
+if (!mongoose.Types.ObjectId.isValid(userId)) {
+  return res.status(400).json({ message: "Invalid userId" });
+}
 
     // convert loginId → doctorId
     const doctor = await doctData.findOne({ commonkey: doctorLoginId });
+// console.log("doctor",doctor);
 
     if (!doctor) {
       return res.status(404).json({
@@ -2256,16 +2310,18 @@ export const createOrGetChat = async (req, res) => {
     }
 
     let chat = await Chat.findOne({
-      userId,
+      userId:userId,
       doctorId: doctor._id,
     });
 
     if (!chat) {
       chat = await Chat.create({
-        userId,
+        userId:userId,
         doctorId: doctor._id,
       });
     }
+    console.log("chat", chat);
+
 
     return res.status(200).json(chat);
   } catch (error) {

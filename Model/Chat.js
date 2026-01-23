@@ -21,7 +21,7 @@ const chatSchema = new mongoose.Schema(
   { timestamps: true } // createdAt & updatedAt
 );
 
-// 🔒 Enforce one chat per buyer-doctor pair
+// 🔒 Enforce one chat per user-doctor pair
 chatSchema.index({ userId: 1, doctorId: 1 }, { unique: true });
 
 export default mongoose.model("Chat", chatSchema);
