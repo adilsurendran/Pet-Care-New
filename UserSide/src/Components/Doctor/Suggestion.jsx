@@ -11,6 +11,8 @@ const ViewGuides = () => {
   const [loading, setLoading] = useState(false);
   const doctorId = localStorage.getItem("userId");
   const doctorIdorg = localStorage.getItem("user");
+  console.log("doctorIdorg",doctorIdorg);
+  
 
   useEffect(() => {
     fetchGuides();
@@ -23,11 +25,15 @@ const ViewGuides = () => {
       
       // Filter guides for this doctor
       const myGuides = response.data.guides.filter(g => g.docId._id === doctorIdorg);
+      console.log("myGuidessss",myGuides);
+      
       setGuides(myGuides);
     } catch (error) {
       console.error("Error fetching guides:", error);
     }
   };
+  console.log(guides,"guidessssssssssssssssssssssss");
+  
 
   const handleDelete = async (guideId) => {
     if (!window.confirm("Are you sure you want to delete this guide?")) return;
@@ -50,7 +56,7 @@ const ViewGuides = () => {
       <DoctorSidebar />
       <main className="doctor-main">
         <header className="panel-header">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center',width:'100%' }}>
             <h1 className="panel-title">My <span>Guides</span></h1>
             <Link to="/addguides" className="logout-btn" style={{ background: 'var(--doc-accent)', color: 'var(--doc-primary)', width: 'auto' }}>
               <FaPlus />

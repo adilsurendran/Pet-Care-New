@@ -430,12 +430,12 @@ export default function Community() {
                 <div className="stat-number">{posts.length}</div>
                 <div className="stat-label">Total Posts</div>
               </div>
-              <div className="stat-card">
+              {/* <div className="stat-card">
                 <div className="stat-number">
                   {posts.reduce((acc, post) => acc + post.comments.length, 0)}
                 </div>
                 <div className="stat-label">Comments</div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

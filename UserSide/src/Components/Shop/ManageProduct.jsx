@@ -323,6 +323,11 @@ const ManageProduct = () => {
   };
 
   const toggleAvailability = async (id) => {
+      const confirmChange = window.confirm(
+    "Are you sure you want to change this product's availability?"
+  );
+
+  if (!confirmChange) return; 
     try {
       await axios.put(`http://localhost:5000/api/product/toggle-availability/${id}`);
       fetchProducts(shopId);
@@ -354,6 +359,35 @@ const ManageProduct = () => {
   };
 
   const handleAddOrEdit = async (e) => {
+    if (!input.ProductName.trim()) {
+    alert("Product Name is required");
+    return;
+  }
+
+  if (!input.price || Number(input.price) <= 0) {
+    alert("Please enter a valid Price");
+    return;
+  }
+
+  if (!input.quantity || Number(input.quantity) < 0) {
+    alert("Please enter a valid Quantity");
+    return;
+  }
+
+  if (!input.category) {
+    alert("Please select a Category");
+    return;
+  }
+
+  if (!input.description.trim()) {
+    alert("Description cannot be empty");
+    return;
+  }
+
+  if (!isEdit && input.screenshots.length === 0) {
+    alert("Please upload at least one product image");
+    return;
+  }
     e.preventDefault();
     if (!validate()) return;
 
@@ -449,7 +483,7 @@ const ManageProduct = () => {
                   <th>#</th>
                   <th>Product Details</th>
                   <th>Price & Stock</th>
-                  <th>Status</th>
+                  <th>Status/Change Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -512,10 +546,8 @@ const ManageProduct = () => {
       </main>
 
       {/* ADD / EDIT MODAL — SAME DESIGN */}
-      <AnimatePresence>
-        {showModal && (
+        {/* {showModal && (
           <div className="premium-modal-overlay">
-            <motion.div className="premium-modal-card">
               <div className="modal-header">
                 <h3>
                   <FaBox /> {isEdit ? "Edit Product" : "Add New Product"}
@@ -570,10 +602,112 @@ const ManageProduct = () => {
                   {isEdit ? "Update" : "Create"}
                 </button>
               </div>
-            </motion.div>
           </div>
-        )}
-      </AnimatePresence>
+        )} */}
+
+        {showModal && (
+  <div className="product-modal-wrapper">
+    <div className="product-modal-card">
+
+      <div className="product-modal-top">
+        <h2 className="product-modal-title">
+          <FaBox className="product-modal-icon" />
+          {isEdit ? "Edit Product" : "Add Product"}
+        </h2>
+      </div>
+
+      <div className="product-modal-content">
+        <form className="product-form-layout">
+
+          <div className="product-field product-full">
+            <label>Product Name</label>
+            <input
+              type="text"
+              name="ProductName"
+              value={input.ProductName}
+              onChange={inputChange}
+            />
+          </div>
+
+          <div className="product-field">
+            <label>Price</label>
+            <input
+              type="number"
+              name="price"
+              value={input.price}
+              onChange={inputChange}
+            />
+          </div>
+
+          <div className="product-field">
+            <label>Quantity</label>
+            <input
+              type="number"
+              name="quantity"
+              value={input.quantity}
+              onChange={inputChange}
+            />
+          </div>
+
+          <div className="product-field product-full">
+            <label>Category</label>
+            <select
+              name="category"
+              value={input.category}
+              onChange={inputChange}
+            >
+              <option value="">Select Category</option>
+              <option value="food">Food</option>
+              <option value="toys">Toys</option>
+              <option value="accessories">Accessories</option>
+              <option value="medicine">Medicine</option>
+            </select>
+          </div>
+
+          <div className="product-field product-full">
+            <label>Description</label>
+            <textarea
+              name="description"
+              rows="3"
+              value={input.description}
+              onChange={inputChange}
+            />
+          </div>
+
+          <div className="product-field product-full">
+            <label>Product Images</label>
+            <input
+              type="file"
+              multiple
+              onChange={handleFileChange}
+              className="product-file-input"
+            />
+          </div>
+
+        </form>
+      </div>
+
+      <div className="product-modal-actions">
+        <button
+          type="button"
+          className="product-btn secondary-btn"
+          onClick={() => setShowModal(false)}
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          className="product-btn primary-btn"
+          onClick={handleAddOrEdit}
+        >
+          {isEdit ? "Update Product" : "Create Product"}
+        </button>
+      </div>
+
+    </div>
+  </div>
+)}
     </div>
   );
 };
