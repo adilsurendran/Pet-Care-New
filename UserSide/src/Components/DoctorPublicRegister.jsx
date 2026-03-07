@@ -3,11 +3,10 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
-import "../RegistrationPage.css";
-import IndexHeader from "../IndexHeader";
+import "./RegistrationPage.css";
 import { useNavigate, Link } from "react-router-dom";
 
-const DsignUp = () => {
+const DoctorRegistration = () => {
 
   const [doctorDetails, setDoctorDetails] = useState({
     doctorName: "",
@@ -122,7 +121,7 @@ const DsignUp = () => {
       formData.append("doctorImage", doctorImage);
 
       const response = await axios.post(
-        "http://localhost:5000/api/doctorreg",
+        "http://localhost:5000/api/doctorreg/fromlogin",
         formData,
         {
           headers: {
@@ -132,7 +131,7 @@ const DsignUp = () => {
       );
 
       alert(response.data.message);
-      navigate("/admindash");
+      navigate("/");
 
     } catch (err) {
 
@@ -144,7 +143,7 @@ const DsignUp = () => {
 
   return (
     <div className="reg-page-wrapper">
-      <IndexHeader type="admin" />
+        <button onClick={() => navigate("/")} style={{position:"absolute",top:"20px",left:"20px",zIndex:"1000",backgroundColor:"#000",color:"#fff",border:"none",padding:"10px 20px",borderRadius:"5px",cursor:"pointer"}}><i className="fa fa-arrow-left" style={{color:"#fff !important"}}></i>Back</button>
 
       <div className="reg-content-container">
 
@@ -305,4 +304,4 @@ const DsignUp = () => {
   );
 };
 
-export default DsignUp;
+export default DoctorRegistration;

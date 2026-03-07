@@ -22,32 +22,31 @@ class _BuyProductsPageState extends State<BuyProductsPage> {
   // Holds quantity per productId
   final Map<String, int> _quantities = {};
   int _getQty(dynamic product) {
-  return _quantities[product["_id"]] ?? 1;
-}
+    return _quantities[product["_id"]] ?? 1;
+  }
 
-void _increaseQty(dynamic product) {
-  setState(() {
-    final id = product["_id"];
-    _quantities[id] = _getQty(product) + 1;
-  });
-}
+  void _increaseQty(dynamic product) {
+    setState(() {
+      final id = product["_id"];
+      _quantities[id] = _getQty(product) + 1;
+    });
+  }
 
-void _decreaseQty(dynamic product) {
-  setState(() {
-    final id = product["_id"];
-    final current = _getQty(product);
-    if (current > 1) {
-      _quantities[id] = current - 1;
-    }
-  });
-}
+  void _decreaseQty(dynamic product) {
+    setState(() {
+      final id = product["_id"];
+      final current = _getQty(product);
+      if (current > 1) {
+        _quantities[id] = current - 1;
+      }
+    });
+  }
 
-bool _isAvailable(dynamic product) {
-  final available = product["available"] == true;
-  final stock = (product["quantity"] ?? 0) > 0;
-  return available && stock;
-}
-
+  bool _isAvailable(dynamic product) {
+    final available = product["available"] == true;
+    final stock = (product["quantity"] ?? 0) > 0;
+    return available && stock;
+  }
 
   String _selectedCategory = "All";
   RangeValues _priceRange = const RangeValues(0, 10000);
@@ -57,7 +56,7 @@ bool _isAvailable(dynamic product) {
     "food",
     "toys",
     "accessories",
-    "medicine"
+    "medicine",
   ];
 
   @override
@@ -139,31 +138,31 @@ bool _isAvailable(dynamic product) {
   // }
 
   Future<void> buyNow(dynamic product, int quantity) async {
-  try {
-    await dio.post(
-      "$baseUrl/api/bookpro/$usrid",
-      data: {
-        "productId": product["_id"],
-        "sellerLoginId": product["userId"],
-        "quantity": quantity,
-      },
-    );
+    try {
+      await dio.post(
+        "$baseUrl/api/bookpro/$usrid",
+        data: {
+          "productId": product["_id"],
+          "sellerLoginId": product["userId"],
+          "quantity": quantity,
+        },
+      );
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Product booked (Qty: $quantity)")),
-    );
-  } on DioException catch (e) {
-    String errorMessage = e.response?.data["message"] ??
-        e.response?.statusMessage ??
-        e.message ??
-        "Something went wrong";
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Product booked (Qty: $quantity)")),
+      );
+    } on DioException catch (e) {
+      String errorMessage =
+          e.response?.data["message"] ??
+          e.response?.statusMessage ??
+          e.message ??
+          "Something went wrong";
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(errorMessage)),
-    );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -172,10 +171,7 @@ bool _isAvailable(dynamic product) {
       appBar: AppBar(
         title: const Text(
           "Buy Products",
-          style: TextStyle(
-            color: Colors.teal,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.white,
         elevation: 0,
@@ -222,11 +218,11 @@ bool _isAvailable(dynamic product) {
                     padding: const EdgeInsets.all(16),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 0.7,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.7,
+                          crossAxisSpacing: 16,
+                          mainAxisSpacing: 16,
+                        ),
                     itemCount: _filteredProducts.length,
                     itemBuilder: (_, i) =>
                         _buildProductCard(_filteredProducts[i]),
@@ -315,171 +311,180 @@ bool _isAvailable(dynamic product) {
   //   );
   // }
   Widget _buildProductCard(dynamic p) {
-  final qty = _getQty(p);
-  final isAvailable = _isAvailable(p);
+    final qty = _getQty(p);
+    final isAvailable = _isAvailable(p);
 
-  return GestureDetector(
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ProductDetailPage(product: p),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => ProductDetailPage(product: p)),
+        );
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-      );
-    },
-    child: Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(20)),
-              child: Image.network(
-                "$baseUrl/uploads/${p["screenshots"][0]}",
-                fit: BoxFit.cover,
-                width: double.infinity,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
+                child: Image.network(
+                  "$baseUrl/uploads/${p["screenshots"][0]}",
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  p["ProductName"],
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 14),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  "₹${p["price"]}",
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.teal),
-                ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    p["ProductName"],
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    "₹${p["price"]}",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.teal,
+                    ),
+                  ),
 
-                const SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
-                // 🔹 Quantity Selector
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   children: [
-                //     IconButton(
-                //       onPressed: () => _decreaseQty(p),
-                //       icon: const Icon(Icons.remove_circle_outline),
-                //       color: Colors.orange,
-                //     ),
-                //     Container(
-                //       padding: const EdgeInsets.symmetric(
-                //           horizontal: 14, vertical: 6),
-                //       decoration: BoxDecoration(
-                //         border: Border.all(color: Colors.grey.shade300),
-                //         borderRadius: BorderRadius.circular(8),
-                //       ),
-                //       child: Text(
-                //         qty.toString(),
-                //         style: const TextStyle(
-                //             fontSize: 16, fontWeight: FontWeight.bold),
-                //       ),
-                //     ),
-                //     IconButton(
-                //       onPressed: () => _increaseQty(p),
-                //       icon: const Icon(Icons.add_circle_outline),
-                //       color: Colors.teal,
-                //     ),
-                //   ],
-                // ),
-Row(
-  mainAxisAlignment: MainAxisAlignment.center,
-  children: [
-    IconButton(
-      onPressed: isAvailable ? () => _decreaseQty(p) : null,
-      icon: const Icon(Icons.remove_circle_outline),
-      color: Colors.orange,
-    ),
-    Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Text(
-        qty.toString(),
-        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-      ),
-    ),
-    IconButton(
-      onPressed: isAvailable ? () => _increaseQty(p) : null,
-      icon: const Icon(Icons.add_circle_outline),
-      color: Colors.teal,
-    ),
-  ],
-),
+                  // 🔹 Quantity Selector
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     IconButton(
+                  //       onPressed: () => _decreaseQty(p),
+                  //       icon: const Icon(Icons.remove_circle_outline),
+                  //       color: Colors.orange,
+                  //     ),
+                  //     Container(
+                  //       padding: const EdgeInsets.symmetric(
+                  //           horizontal: 14, vertical: 6),
+                  //       decoration: BoxDecoration(
+                  //         border: Border.all(color: Colors.grey.shade300),
+                  //         borderRadius: BorderRadius.circular(8),
+                  //       ),
+                  //       child: Text(
+                  //         qty.toString(),
+                  //         style: const TextStyle(
+                  //             fontSize: 16, fontWeight: FontWeight.bold),
+                  //       ),
+                  //     ),
+                  //     IconButton(
+                  //       onPressed: () => _increaseQty(p),
+                  //       icon: const Icon(Icons.add_circle_outline),
+                  //       color: Colors.teal,
+                  //     ),
+                  //   ],
+                  // ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     IconButton(
+                  //       onPressed: isAvailable ? () => _decreaseQty(p) : null,
+                  //       icon: const Icon(Icons.remove_circle_outline),
+                  //       color: Colors.orange,
+                  //     ),
+                  //     Container(
+                  //       padding: const EdgeInsets.symmetric(
+                  //         horizontal: 14,
+                  //         vertical: 6,
+                  //       ),
+                  //       decoration: BoxDecoration(
+                  //         border: Border.all(color: Colors.grey.shade300),
+                  //         borderRadius: BorderRadius.circular(8),
+                  //       ),
+                  //       child: Text(
+                  //         qty.toString(),
+                  //         style: const TextStyle(
+                  //           fontSize: 16,
+                  //           fontWeight: FontWeight.bold,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     IconButton(
+                  //       onPressed: isAvailable ? () => _increaseQty(p) : null,
+                  //       icon: const Icon(Icons.add_circle_outline),
+                  //       color: Colors.teal,
+                  //     ),
+                  //   ],
+                  // ),
 
-                const SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
-                // SizedBox(
-                //   width: double.infinity,
-                //   child: ElevatedButton(
-                //     onPressed: () => buyNow(p, qty),
-                //     style: ElevatedButton.styleFrom(
-                //       backgroundColor: Colors.teal,
-                //       foregroundColor: Colors.white,
-                //       shape: RoundedRectangleBorder(
-                //         borderRadius: BorderRadius.circular(12),
-                //       ),
-                //     ),
-                //     child: const Text("Buy Now"),
-                //   ),
-                // ),
-                SizedBox(
-  width: double.infinity,
-  child: ElevatedButton(
-    onPressed: isAvailable ? () => buyNow(p, qty) : null,
-    style: ElevatedButton.styleFrom(
-      backgroundColor:
-          isAvailable ? Colors.teal : Colors.grey.shade400,
-      foregroundColor: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-    ),
-    child: Text(
-      isAvailable ? "Buy Now" : "Currently Unavailable",
-      style: const TextStyle(fontWeight: FontWeight.bold),
-    ),
-  ),
-),
-
-              ],
+                  // SizedBox(
+                  //   width: double.infinity,
+                  //   child: ElevatedButton(
+                  //     onPressed: () => buyNow(p, qty),
+                  //     style: ElevatedButton.styleFrom(
+                  //       backgroundColor: Colors.teal,
+                  //       foregroundColor: Colors.white,
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(12),
+                  //       ),
+                  //     ),
+                  //     child: const Text("Buy Now"),
+                  //   ),
+                  // ),
+                  // SizedBox(
+                  //   width: double.infinity,
+                  //   child: ElevatedButton(
+                  //     onPressed: isAvailable ? () => buyNow(p, qty) : null,
+                  //     style: ElevatedButton.styleFrom(
+                  //       backgroundColor: isAvailable
+                  //           ? Colors.teal
+                  //           : Colors.grey.shade400,
+                  //       foregroundColor: Colors.white,
+                  //       shape: RoundedRectangleBorder(
+                  //         borderRadius: BorderRadius.circular(12),
+                  //       ),
+                  //     ),
+                  //     child: Text(
+                  //       isAvailable ? "Buy Now" : "Currently Unavailable",
+                  //       style: const TextStyle(fontWeight: FontWeight.bold),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 
   void _showFilterSheet() {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (_) {
         return StatefulBuilder(
           builder: (_, setSheet) {
@@ -488,15 +493,15 @@ Row(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text("Filter Products",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  const Text(
+                    "Filter Products",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
                   DropdownButton<String>(
                     value: _selectedCategory,
                     isExpanded: true,
                     items: _categories
-                        .map((c) =>
-                            DropdownMenuItem(value: c, child: Text(c)))
+                        .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                         .toList(),
                     onChanged: (v) => setSheet(() {
                       _selectedCategory = v!;
@@ -508,8 +513,9 @@ Row(
                     max: 10000,
                     divisions: 20,
                     labels: RangeLabels(
-                        "₹${_priceRange.start.toInt()}",
-                        "₹${_priceRange.end.toInt()}"),
+                      "₹${_priceRange.start.toInt()}",
+                      "₹${_priceRange.end.toInt()}",
+                    ),
                     onChanged: (v) => setSheet(() => _priceRange = v),
                   ),
                   ElevatedButton(
@@ -518,7 +524,8 @@ Row(
                       Navigator.pop(context);
                     },
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal),
+                      backgroundColor: Colors.teal,
+                    ),
                     child: const Text("Apply Filters"),
                   ),
                 ],
@@ -621,19 +628,40 @@ Row(
 //   }
 // }
 
-class ProductDetailPage extends StatelessWidget {
+class ProductDetailPage extends StatefulWidget {
   final dynamic product;
 
   const ProductDetailPage({super.key, required this.product});
 
+  @override
+  State<ProductDetailPage> createState() => _ProductDetailPageState();
+}
+
+class _ProductDetailPageState extends State<ProductDetailPage> {
+  int _quantity = 1;
+
   bool _isAvailable() {
-    final available = product["available"] == true;
-    final stock = (product["quantity"] ?? 0) > 0;
+    final available = widget.product["available"] == true;
+    final stock = (widget.product["quantity"] ?? 0) > 0;
     return available && stock;
   }
 
+  void _increaseQty() {
+    setState(() {
+      _quantity++;
+    });
+  }
+
+  void _decreaseQty() {
+    if (_quantity > 1) {
+      setState(() {
+        _quantity--;
+      });
+    }
+  }
+
   Future<void> _callShop(BuildContext context) async {
-    final phone = product["shopPhone"];
+    final phone = widget.product["shopPhone"];
     if (phone == null || phone.toString().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Phone number not available")),
@@ -645,9 +673,36 @@ class ProductDetailPage extends StatelessWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Could not open dialer")),
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Could not open dialer")));
+    }
+  }
+
+  Future<void> buyNow(dynamic product, int quantity) async {
+    try {
+      await dio.post(
+        "$baseUrl/api/bookpro/$usrid",
+        data: {
+          "productId": product["_id"],
+          "sellerLoginId": product["userId"],
+          "quantity": quantity,
+        },
       );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Product booked (Qty: $quantity)")),
+      );
+    } on DioException catch (e) {
+      String errorMessage =
+          e.response?.data["message"] ??
+          e.response?.statusMessage ??
+          e.message ??
+          "Something went wrong";
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
     }
   }
 
@@ -670,7 +725,7 @@ class ProductDetailPage extends StatelessWidget {
         child: Column(
           children: [
             Image.network(
-              "$baseUrl/uploads/${product["screenshots"][0]}",
+              "$baseUrl/uploads/${widget.product["screenshots"][0]}",
               height: 300,
               width: double.infinity,
               fit: BoxFit.cover,
@@ -682,20 +737,23 @@ class ProductDetailPage extends StatelessWidget {
                 children: [
                   // Product Name
                   Text(
-                    product["ProductName"],
+                    widget.product["ProductName"],
                     style: const TextStyle(
-                        fontSize: 22, fontWeight: FontWeight.bold),
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
 
                   const SizedBox(height: 8),
 
                   // Price
                   Text(
-                    "₹${product["price"]}",
+                    "₹${widget.product["price"]}",
                     style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.teal),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.teal,
+                    ),
                   ),
 
                   const SizedBox(height: 16),
@@ -705,7 +763,7 @@ class ProductDetailPage extends StatelessWidget {
                     children: [
                       const Icon(Icons.category, color: Colors.teal),
                       const SizedBox(width: 8),
-                      Text(product["category"]),
+                      Text(widget.product["category"]),
                     ],
                   ),
 
@@ -720,9 +778,11 @@ class ProductDetailPage extends StatelessWidget {
                           const Icon(Icons.store, color: Colors.teal),
                           const SizedBox(width: 8),
                           Text(
-                            product["shopName"] ?? "Unknown Shop",
+                            widget.product["shopName"] ?? "Unknown Shop",
                             style: const TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ],
                       ),
@@ -731,7 +791,7 @@ class ProductDetailPage extends StatelessWidget {
                         icon: const Icon(Icons.call),
                         color: Colors.green,
                         tooltip: "Call Shop",
-                      )
+                      ),
                     ],
                   ),
 
@@ -740,22 +800,59 @@ class ProductDetailPage extends StatelessWidget {
                   // Description
                   const Text(
                     "Description",
-                    style:
-                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    product["description"] ?? "No description available",
+                    widget.product["description"] ?? "No description available",
                     style: const TextStyle(color: Colors.grey, height: 1.5),
                   ),
 
                   const SizedBox(height: 40),
 
+                  // Quantity Selector
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: isAvailable ? _decreaseQty : null,
+                        icon: const Icon(Icons.remove_circle_outline),
+                        color: Colors.orange,
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          _quantity.toString(),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: isAvailable ? _increaseQty : null,
+                        icon: const Icon(Icons.add_circle_outline),
+                        color: Colors.teal,
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
                   // Buy Now / Unavailable Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: isAvailable ? () {} : null,
+                      onPressed: isAvailable
+                          ? () => buyNow(widget.product, _quantity)
+                          : null,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isAvailable
                             ? Colors.teal
@@ -766,16 +863,15 @@ class ProductDetailPage extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        isAvailable
-                            ? "Buy Now"
-                            : "Currently Unavailable",
+                        isAvailable ? "Buy Now" : "Currently Unavailable",
                         style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

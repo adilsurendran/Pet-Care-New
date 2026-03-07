@@ -9,7 +9,6 @@ import 'package:petcareapp/login.dart';
 
 import 'pet_manager.dart';
 
-
 class Petprofile extends StatefulWidget {
   final Pet? pet; // null → add | not null → edit
 
@@ -58,8 +57,7 @@ class _PetprofileState extends State<Petprofile> {
 
       if (pet.lastVaccination != null) {
         lastVaccinationDate = pet.lastVaccination;
-        lastvaccinationController.text =
-            _formatDate(pet.lastVaccination!);
+        lastvaccinationController.text = _formatDate(pet.lastVaccination!);
       }
 
       mobileImage = pet.image; // mobile preview only
@@ -68,9 +66,7 @@ class _PetprofileState extends State<Petprofile> {
 
   // ---------------- IMAGE PICKER ----------------
   Future<void> pickImage() async {
-    final XFile? picked = await picker.pickImage(
-      source: ImageSource.gallery,
-    );
+    final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
 
     if (picked == null) return;
 
@@ -91,9 +87,7 @@ class _PetprofileState extends State<Petprofile> {
       await dio.post(
         '$baseUrl/api/pets/add/$usrid',
         data: formData,
-        options: Options(headers: {
-          'Content-Type': 'multipart/form-data',
-        }),
+        options: Options(headers: {'Content-Type': 'multipart/form-data'}),
       );
     } catch (e) {
       debugPrint("Add Pet Error: $e");
@@ -105,14 +99,12 @@ class _PetprofileState extends State<Petprofile> {
     try {
       final formData = await _buildFormData();
 
-   final resi=   await dio.put(
+      final resi = await dio.put(
         '$baseUrl/api/pets/${widget.pet!.id}',
         data: formData,
-        options: Options(headers: {
-          'Content-Type': 'multipart/form-data',
-        }),
+        options: Options(headers: {'Content-Type': 'multipart/form-data'}),
       );
-      if(resi.statusCode==200||resi.statusCode==201){
+      if (resi.statusCode == 200 || resi.statusCode == 201) {
         getPetdetailsApi();
       }
     } catch (e) {
@@ -166,8 +158,10 @@ class _PetprofileState extends State<Petprofile> {
         backgroundColor: Colors.white,
         elevation: 1,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new,
-              color: Color.fromARGB(250, 218, 98, 17)),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Color.fromARGB(250, 218, 98, 17),
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -231,10 +225,27 @@ class _PetprofileState extends State<Petprofile> {
               height: 55,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color.fromARGB(250, 218, 98, 17),
+                  backgroundColor: const Color.fromARGB(250, 218, 98, 17),
                 ),
                 onPressed: () async {
+                  if (nameController.text.trim().isEmpty ||
+                      typeController.text.trim().isEmpty ||
+                      breedController.text.trim().isEmpty ||
+                      selectedGender == null ||
+                      dobController.text.trim().isEmpty ||
+                      weightController.text.trim().isEmpty ||
+                      notesController.text.trim().isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Please fill all fields",
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                    return;
+                  }
+
                   if (isEditing) {
                     await updatepetApi();
                   } else {
@@ -245,7 +256,9 @@ class _PetprofileState extends State<Petprofile> {
                 child: Text(
                   isEditing ? "Save Changes" : "Add Pet",
                   style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -338,9 +351,7 @@ class _PetprofileState extends State<Petprofile> {
       decoration: InputDecoration(
         labelText: label,
         suffixIcon: icon != null ? Icon(icon) : null,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );
   }

@@ -35,7 +35,7 @@
 //       print(e);
 //     }
 //     // final userId = "USER_ID_FROM_STORAGE";
-    
+
 //   }
 
 //   Future<void> cancelOrder(String id) async {
@@ -154,6 +154,39 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
     }
   }
 
+  void _confirmCancel(BuildContext context, String orderId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          "Cancel Order",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: const Text("Are you sure you want to cancel this order?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              "Cancel",
+              style: TextStyle(color: Colors.black54),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              cancelOrder(orderId);
+            },
+            child: const Text("Proceed"),
+          ),
+        ],
+      ),
+    );
+  }
+
   // =========================
   // MARK DELIVERED
   // =========================
@@ -164,6 +197,38 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
     } catch (e) {
       debugPrint("DELIVER ERROR: $e");
     }
+  }
+
+  void _confirmDeliver(BuildContext context, String orderId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          "Mark Delivered",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          "Are you sure you want to mark this order as delivered?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("No", style: TextStyle(color: Colors.black54)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              markDelivered(orderId);
+            },
+            child: const Text("Yes"),
+          ),
+        ],
+      ),
+    );
   }
 
   // =========================
@@ -182,88 +247,88 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : orders.isEmpty
-              ? const Center(child: Text("No orders found"))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: orders.length,
-                  itemBuilder: (_, index) {
-                    final o = orders[index];
-                    final product = o["productId"];
+          ? const Center(child: Text("No orders found"))
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: orders.length,
+              itemBuilder: (_, index) {
+                final o = orders[index];
+                final product = o["productId"];
 
-                    return Card(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        // PRODUCT IMAGE
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: Image.network(
+                            "$baseUrl/uploads/${product["screenshots"][0]}",
+                            width: 70,
+                            height: 70,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+
+                        // PRODUCT INFO
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product["ProductName"],
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                "Qty: ${o["quantity"]}",
+                                style: const TextStyle(color: Colors.grey),
+                              ),
+                              const SizedBox(height: 6),
+                              _statusBadge(o["status"]),
+                            ],
+                          ),
+                        ),
+
+                        // ACTIONS
+                        Column(
                           children: [
-                            // PRODUCT IMAGE
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.network(
-                                "$baseUrl/uploads/${product["screenshots"][0]}",
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.cover,
+                            if (o["status"] == "pending" ||
+                                o["status"] == "confirmed")
+                              TextButton(
+                                onPressed: () =>
+                                    _confirmCancel(context, o["_id"]),
+                                child: const Text(
+                                  "Cancel",
+                                  style: TextStyle(color: Colors.red),
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 16),
-
-                            // PRODUCT INFO
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    product["ProductName"],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  Text(
-                                    "Qty: ${o["quantity"]}",
-                                    style: const TextStyle(color: Colors.grey),
-                                  ),
-                                  const SizedBox(height: 6),
-                                  _statusBadge(o["status"]),
-                                ],
+                            if (o["status"] == "confirmed")
+                              TextButton(
+                                onPressed: () =>
+                                    _confirmDeliver(context, o["_id"]),
+                                child: const Text(
+                                  "Mark Delivered",
+                                  style: TextStyle(color: Colors.green),
+                                ),
                               ),
-                            ),
-
-                            // ACTIONS
-                            Column(
-                              children: [
-                                if (o["status"] == "pending" ||
-                                    o["status"] == "confirmed")
-                                  TextButton(
-                                    onPressed: () =>
-                                        cancelOrder(o["_id"]),
-                                    child: const Text(
-                                      "Cancel",
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  ),
-                                if (o["status"] == "confirmed")
-                                  TextButton(
-                                    onPressed: () =>
-                                        markDelivered(o["_id"]),
-                                    child: const Text(
-                                      "Mark Delivered",
-                                      style: TextStyle(color: Colors.green),
-                                    ),
-                                  ),
-                              ],
-                            ),
                           ],
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
     );
   }
 
@@ -296,11 +361,7 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
       ),
       child: Text(
         status,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 12,
-          color: fg,
-        ),
+        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: fg),
       ),
     );
   }

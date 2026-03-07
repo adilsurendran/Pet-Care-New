@@ -47,6 +47,7 @@ import PetMarketplace from './Components/User/PetMarketplace';
 import Community from './Components/User/Community';
 import ShopLayout from './Components/Shop/ShopLayout';
 import DoctorLayout from './Components/Doctor/DoctorLayout';
+import DoctorRegistration from './Components/DoctorPublicRegister';
 
 
 
@@ -59,6 +60,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/docs" element={<DsignUp />} />
+          <Route path="/DoctorRegistration" element={<DoctorRegistration />} />
           <Route path="/shopr" element={<SsignUp />} />
           <Route path="/userreg" element={<UserReg />} />
           <Route path="/admindash" element={<AdminDash />} />

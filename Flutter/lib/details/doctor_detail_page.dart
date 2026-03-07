@@ -3,18 +3,25 @@ import 'package:petcareapp/service_models.dart';
 import 'package:petcareapp/chat_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DoctorDetailPage extends StatelessWidget {
+class DoctorDetailPage extends StatefulWidget {
   final Doctor doctor;
-  
 
   const DoctorDetailPage({super.key, required this.doctor});
 
+  @override
+  State<DoctorDetailPage> createState() => _DoctorDetailPageState();
+}
+
+class _DoctorDetailPageState extends State<DoctorDetailPage> {
   Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: phoneNumber,
-    );
+    // print("phno: " + phoneNumber);
+    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
     await launchUrl(launchUri);
+  }
+
+  initState() {
+    super.initState();
+    print("Doctor Object: ${widget.doctor.phone}");
   }
 
   @override
@@ -30,15 +37,15 @@ class DoctorDetailPage extends StatelessWidget {
             leading: IconButton(
               icon: const CircleAvatar(
                 backgroundColor: Colors.white,
-                child: Icon(Icons.arrow_back_ios_new, color: Color.fromARGB(250, 218, 98, 17)),
+                child: Icon(
+                  Icons.arrow_back_ios_new,
+                  color: Color.fromARGB(250, 218, 98, 17),
+                ),
               ),
               onPressed: () => Navigator.pop(context),
             ),
             flexibleSpace: FlexibleSpaceBar(
-              background: Image.network(
-                doctor.image,
-                fit: BoxFit.cover,
-              ),
+              background: Image.network(widget.doctor.image, fit: BoxFit.cover),
             ),
           ),
           SliverList(
@@ -53,7 +60,7 @@ class DoctorDetailPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            doctor.name,
+                            widget.doctor.name,
                             style: const TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.bold,
@@ -86,7 +93,7 @@ class DoctorDetailPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      doctor.qualification,
+                      widget.doctor.qualification,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey.shade600,
@@ -95,23 +102,23 @@ class DoctorDetailPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      doctor.location,
+                      widget.doctor.location,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey.shade500,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    
+
                     // Info Cards
                     Row(
                       children: [
-                        _infoCard("Experience", doctor.experience),
+                        _infoCard("Experience", widget.doctor.experience),
                         const SizedBox(width: 14),
                         // _infoCard("Patients", "1000+"),
                       ],
                     ),
-                    
+
                     const SizedBox(height: 20),
                     const Text(
                       "About Doctor",
@@ -122,21 +129,21 @@ class DoctorDetailPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      doctor.description.isEmpty 
-                      ? "Dedicated professional committed to providing the best care for your pets." 
-                      : doctor.description,
+                      widget.doctor.description.isEmpty
+                          ? "Dedicated professional committed to providing the best care for your pets."
+                          : widget.doctor.description,
                       style: TextStyle(
                         fontSize: 16,
                         color: Colors.grey.shade600,
                         height: 1.5,
                       ),
                     ),
-                     const SizedBox(height: 100), // Space for bottom button
+                    const SizedBox(height: 100), // Space for bottom button
                   ],
                 ),
               ),
             ]),
-          )
+          ),
         ],
       ),
       bottomSheet: Container(
@@ -148,8 +155,8 @@ class DoctorDetailPage extends StatelessWidget {
               color: Colors.black.withOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, -5),
-            )
-          ]
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -161,8 +168,13 @@ class DoctorDetailPage extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
                     foregroundColor: const Color.fromARGB(250, 218, 98, 17),
-                    side: const BorderSide(color: Color.fromARGB(250, 218, 98, 17), width: 1.5),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    side: const BorderSide(
+                      color: Color.fromARGB(250, 218, 98, 17),
+                      width: 1.5,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                     elevation: 0,
                   ),
                   icon: const Icon(Icons.call),
@@ -170,12 +182,19 @@ class DoctorDetailPage extends StatelessWidget {
                     "Call",
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  onPressed: () => _makePhoneCall(doctor.phone),
+                  onPressed: () {
+                    // print("Doctor data: ${}");
+                    print("Name: ${widget.doctor.name}");
+                    print("Phone: ${widget.doctor.phone}");
+                    print("ID: ${widget.doctor.id}");
+
+                    _makePhoneCall(widget.doctor.phone);
+                  },
                 ),
               ),
             ),
-      
-            if (!doctor.isVet) ...[
+
+            if (!widget.doctor.isVet) ...[
               const SizedBox(width: 16),
               // CHAT BUTTON
               Expanded(
@@ -185,23 +204,33 @@ class DoctorDetailPage extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(250, 218, 98, 17),
                       foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
                       elevation: 5,
                     ),
                     icon: const Icon(Icons.chat_bubble_outline),
                     label: const Text(
                       "Chat",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(
-                        name: doctor.name, 
-                        image: doctor.image,
-                        type: 'doctor',
-                        id: doctor.id,
-                        docloginId: doctor.docloginId,
-                        fromProfile: true,
-                      )));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ChatScreen(
+                            name: widget.doctor.name,
+                            image: widget.doctor.image,
+                            type: 'doctor',
+                            id: widget.doctor.id,
+                            docloginId: widget.doctor.docloginId,
+                            fromProfile: true,
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -235,10 +264,7 @@ class DoctorDetailPage extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               title,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
             ),
           ],
         ),

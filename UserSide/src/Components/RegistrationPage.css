@@ -172,3 +172,9 @@
         padding: 25px 20px;
     }
 }
+
+.field-error{
+color:#e63946;
+font-size:12px;
+margin-top:4px;
+}

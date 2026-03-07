@@ -148,6 +148,7 @@
 //   }
 // }
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:petcareapp/api_config.dart';
 import 'package:petcareapp/homescreen.dart';
@@ -191,6 +192,17 @@ class _LoginPageState extends State<LoginPage> {
           return;
         }
 
+        if (responseData['verify'] == false) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                "Your account is not verified yet. Please wait for admin approval.",
+              ),
+            ),
+          );
+          return;
+        }
+
         lid = responseData['id'];
         usrid = responseData['userDetails']['_id'];
         userFullname = responseData['userDetails']['userFullname'];
@@ -207,13 +219,14 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text("Login Successful")));
-      } else {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Login Failed")));
       }
+    } on DioException catch (e) {
+      final errorMessage =
+          e.response?.data['message'] ?? "Something went wrong";
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(errorMessage)));
     } catch (e) {
-      print(e);
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Something went wrong")));

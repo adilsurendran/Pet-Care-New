@@ -203,7 +203,7 @@ class ServiceManager {
   Future<void> fetchDoctors(BuildContext context) async {
     try {
       final response = await dio.get('$baseUrl/api/getalldoctors');
-print(response.data);
+// print(response.data);
       if (response.statusCode == 200 &&
           response.data['success'] == true) {
         _doctors.clear();
@@ -224,16 +224,16 @@ print(response.data);
               rating: 4.5, // default (backend not providing yet)
               location: item['doctorAddress'] ?? '',
               description: item['doctorAbout'] ?? '',
-              phone: item['phone'] ?? '',
+              phone: item['doctorNumber'] ?? '',
               docloginId: item['commonkey']["_id"] ?? '',
             ),
           );
         }
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-              content: Text("Doctor fetched successfully")),
-        );
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   const SnackBar(
+        //       content: Text("Doctor fetched successfully")),
+        // );
       }
     } catch (e) {
       debugPrint("Doctor API Error: $e");

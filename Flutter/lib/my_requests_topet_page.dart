@@ -34,14 +34,76 @@ class _MyPetRequestsPageState extends State<MyPetRequestsPage> {
 
   Future<void> updateOrderStatus(String orderId, String status) async {
     try {
-      await dio.put(
-        '$baseUrl/api/order/$orderId',
-        data: {"status": status},
-      );
+      await dio.put('$baseUrl/api/order/$orderId', data: {"status": status});
       fetchMyRequests();
     } catch (e) {
       debugPrint("Update Status Error: $e");
     }
+  }
+
+  void _confirmCancel(BuildContext context, String orderId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          "Cancel Request",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: const Text("Are you sure you want to cancel this request?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              "Cancel",
+              style: TextStyle(color: Colors.black54),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xffef4444),
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              updateOrderStatus(orderId, "Cancelled");
+            },
+            child: const Text("Proceed"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _confirmDelivered(BuildContext context, String orderId) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          "Mark Delivered",
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          "Are you sure you want to mark this request as delivered?",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("No", style: TextStyle(color: Colors.black54)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xffdcfce7),
+              foregroundColor: const Color(0xff166534),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              updateOrderStatus(orderId, "Delivered");
+            },
+            child: const Text("Yes"),
+          ),
+        ],
+      ),
+    );
   }
 
   Color _statusBg(String status) {
@@ -88,123 +150,119 @@ class _MyPetRequestsPageState extends State<MyPetRequestsPage> {
         elevation: 1,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new,
-              color: Color.fromARGB(250, 218, 98, 17)),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: Color.fromARGB(250, 218, 98, 17),
+          ),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: loading
           ? const Center(child: CircularProgressIndicator())
           : orders.isEmpty
-              ? const Center(child: Text("No requests found"))
-              : ListView.builder(
+          ? const Center(child: Text("No requests found"))
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: orders.length,
+              itemBuilder: (context, index) {
+                final o = orders[index];
+                final pet = o["petId"];
+
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.all(16),
-                  itemCount: orders.length,
-                  itemBuilder: (context, index) {
-                    final o = orders[index];
-                    final pet = o["petId"];
-
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 8,
-                          ),
-                        ],
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 8,
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Pet name
-                          Text(
-                            pet?["name"] ?? "Unknown Pet",
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          const SizedBox(height: 6),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Pet name
+                      Text(
+                        pet?["name"] ?? "Unknown Pet",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
 
-                          // Status badge
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: BoxDecoration(
-                              color: _statusBg(o["status"]),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              "Status: ${o["status"]}",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
-                                color: _statusText(o["status"]),
+                      // Status badge
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: _statusBg(o["status"]),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          "Status: ${o["status"]}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: _statusText(o["status"]),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 14),
+
+                      // ACTION BUTTONS
+                      Row(
+                        children: [
+                          if (o["status"] == "Pending")
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xfffee2e2),
+                                  foregroundColor: const Color(0xffef4444),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                onPressed: () =>
+                                    _confirmCancel(context, o["_id"]),
+                                child: const Text(
+                                  "Cancel",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
                               ),
                             ),
-                          ),
 
-                          const SizedBox(height: 14),
-
-                          // ACTION BUTTONS
-                          Row(
-                            children: [
-                              if (o["status"] == "Pending")
-                                Expanded(
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          const Color(0xfffee2e2),
-                                      foregroundColor:
-                                          const Color(0xffef4444),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    onPressed: () => updateOrderStatus(
-                                        o["_id"], "Cancelled"),
-                                    child: const Text(
-                                      "Cancel",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                          if (o["status"] == "Approved")
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xffdcfce7),
+                                  foregroundColor: const Color(0xff166534),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
                                 ),
-
-                              if (o["status"] == "Approved")
-                                Expanded(
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor:
-                                          const Color(0xffdcfce7),
-                                      foregroundColor:
-                                          const Color(0xff166534),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12),
-                                      ),
-                                    ),
-                                    onPressed: () => updateOrderStatus(
-                                        o["_id"], "Delivered"),
-                                    child: const Text(
-                                      "Delivered",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
+                                onPressed: () =>
+                                    _confirmDelivered(context, o["_id"]),
+                                child: const Text(
+                                  "Delivered",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                            ],
-                          ),
+                              ),
+                            ),
                         ],
                       ),
-                    );
-                  },
-                ),
+                    ],
+                  ),
+                );
+              },
+            ),
     );
   }
 }

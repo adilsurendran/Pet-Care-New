@@ -202,6 +202,144 @@ export const doctorRegistration = async (req, res) => {
 };
 
 
+
+export const blockUnblockDoctor = async (req, res) => {
+
+  try {
+
+    const { doctorId, action } = req.body;
+
+    if (!doctorId || !action) {
+      return res.status(400).json({
+        success: false,
+        message: "Doctor ID and action are required"
+      });
+    }
+
+    const doctor = await doctData.findById(doctorId);
+
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor not found"
+      });
+    }
+
+    let verifyStatus;
+
+    if (action === "block") {
+      verifyStatus = false;
+    } else if (action === "unblock") {
+      verifyStatus = true;
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid action"
+      });
+    }
+
+    await loginData.findByIdAndUpdate(
+      doctor.commonkey,
+      { verify: verifyStatus },
+      { new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: `Doctor ${action}ed successfully`
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+
+  }
+};
+
+export const doctorRegistrationFromLogin = async (req, res) => {
+  try {
+    const {
+      doctorName,
+      doctorEmail,
+      doctorNumber,
+      doctorAddress,
+      doctorQualification,
+      doctorExperience,
+      doctorAbout,
+      userPassword,
+    } = req.body;
+
+    // multer adds file here
+    const doctorImage = req.file ? req.file.path : null;
+
+    // Validation
+    if (
+      !doctorName ||
+      !doctorEmail ||
+      !doctorNumber ||
+      !doctorAddress ||
+      !doctorQualification ||
+      !doctorExperience ||
+      !doctorAbout ||
+      !userPassword ||
+      !doctorImage
+    ) {
+      return res.status(400).json({
+        message: "Please fill all fields",
+        success: false,
+      });
+    }
+
+    // Check doctor email
+    const existingDoctor = await loginData.findOne({ username:doctorEmail });
+    if (existingDoctor) {
+      return res
+        .status(400)  
+        .json({ message: "Doctor with same email exists", success: false });
+    }
+
+    // Create login entry
+    const hashedPassword = await bcrypt.hash(userPassword, 10);
+
+    const login = await loginData.create({
+      username:doctorEmail,
+      password: hashedPassword,
+      role: "doctor",
+      verify: false,
+    });
+
+    // Create doctor entry
+    await doctData.create({
+      commonkey: login._id,
+      doctorName,
+      doctorEmail,
+      doctorNumber,
+      doctorAddress,
+      doctorQualification,
+      doctorExperience,
+      doctorAbout,
+      doctorImage,
+    });
+
+    res.status(201).json({
+      message: "Doctor registered successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Server error",
+      success: false,
+    });
+  }
+};
+
+
 /* function to get all users */
 export const getAllUsers = async (req, res) => {
     try {
@@ -218,26 +356,63 @@ export const getAllUsers = async (req, res) => {
 
 
 
+// export const getAlldoct = async (req, res) => {
+//   try {
+//     // Fetch all doctors and populate the commonkey field
+//     const doctors = await doctData
+//       .find()
+//       .populate("commonkey", "username email")  // Populate only necessary fields like username and email
+//       .exec();
+
+//     if (!doctors || doctors.length === 0) {
+//       return res.status(404).json({ success: false, message: "No doctors found" });
+//     }
+
+//     // Respond with the populated doctor data
+//     res.status(200).json({ success: true, data: doctors });
+//   } catch (error) {
+//     console.error("Error fetching doctors:", error);
+//     res.status(500).json({ success: false, message: "Internal Server Error" });
+//   }
+// };
 export const getAlldoct = async (req, res) => {
   try {
-    // Fetch all doctors and populate the commonkey field
+
     const doctors = await doctData
       .find()
-      .populate("commonkey", "username email")  // Populate only necessary fields like username and email
+      .populate("commonkey", "username verify") 
+      .sort({ createdAt: -1 })
       .exec();
 
     if (!doctors || doctors.length === 0) {
-      return res.status(404).json({ success: false, message: "No doctors found" });
+      return res.status(404).json({
+        success: false,
+        message: "No doctors found"
+      });
     }
 
-    // Respond with the populated doctor data
-    res.status(200).json({ success: true, data: doctors });
+    // attach isBlocked field for frontend
+    const formattedDoctors = doctors.map((doc) => ({
+      ...doc.toObject(),
+      isBlocked: doc.commonkey ? !doc.commonkey.verify : false
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: formattedDoctors
+    });
+
   } catch (error) {
+
     console.error("Error fetching doctors:", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error"
+    });
+
   }
 };
-
 
 
 /* function for shop registration and username password moving to Login schema */
@@ -449,13 +624,13 @@ export const login = async (req, res) => {
         // Find user by username
         const user = await loginData.findOne({ username });
         if (!user) {
-            return res.status(400).json({ message: "Invalid username" });
+            return res.status(400).json({ message: "Invalid username or password" });
         }
 
         // Check if password matches
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(400).json({ message: "Invalid password" });
+            return res.status(400).json({ message: "Invalid username or password" });
         }
 
         // Get the user's role and ID
@@ -1108,9 +1283,9 @@ export const editProduct = async (req, res) => {
 
         const products = await Product.find({ userId }); // Find all products with the given userId
 
-        if (products.length === 0) {
-            return res.status(404).json({ success: false, message: "No products found for this user." });
-        }
+        // if (products.length === 0) {
+        //     return res.status(404).json({ success: false, message: "No products found for this user." });
+        // }
 
         res.status(200).json({ success: true, products });
     } catch (error) {
@@ -1428,9 +1603,9 @@ export const viewOrdersByProductOwner = async (req, res) => {
             .populate("userId","userFullname city pincode")
             .populate("productId", "ProductName price");
 
-        if (orders.length === 0) {
-            return res.status(404).json({ message: "No orders found" });
-        }
+        // if (orders.length === 0) {
+        //     return res.status(404).json({ message: "No orders found" });
+        // }
 
         return res.status(200).json({ message: "Orders retrieved successfully", orders });
     } catch (error) {
@@ -2458,6 +2633,8 @@ export const getDoctorChatList = async (req, res) => {
  * Matches frontend addPet() form
  */
 export const addPet = async (req, res) => {  
+  console.log(req.body);
+  
   try {
     const { ownerId } = req.params;
     const {

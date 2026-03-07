@@ -8,11 +8,6 @@ const IndexHeader = ({ type }) => {
     <div className="header-wrapper">
       <header className="premium-header">
         <div className="container d-flex justify-content-between align-items-center">
-          <Link to={'/'} className='text-decoration-none'>
-            <h1 className="logo-brand">
-              W<span>oo</span>fTale
-            </h1>
-          </Link>
           <nav className="premium-nav">
             {type === 'admin' ? (
               <Link to='/admindash' className="login-pill">← Dashboard</Link>
@@ -23,6 +18,12 @@ const IndexHeader = ({ type }) => {
               </>
             )}
           </nav>
+          <Link to={'/'} className='text-decoration-none'>
+            <h1 className="logo-brand">
+              W<span>oo</span>fTale
+            </h1>
+          </Link>
+          
         </div>
       </header>
     </div>

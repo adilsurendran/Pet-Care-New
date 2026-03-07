@@ -155,9 +155,9 @@ const Login = () => {
             </div>
             <p className="register-text text-light">Don't have an account? Register as</p>
             <div className="registration-actions">
-              {/* <Link to="/userreg" className="reg-link user-reg">
-                <i>🐾</i> User
-              </Link> */}
+              <Link to="/DoctorRegistration" className="reg-link user-reg">
+                <i>🩺</i> Doctor
+              </Link>
               <Link to="/shopr" className="reg-link shop-reg">
                 <i>🏬</i> Shop
               </Link>

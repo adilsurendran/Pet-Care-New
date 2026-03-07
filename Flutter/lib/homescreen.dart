@@ -727,23 +727,23 @@ class _HomeContentState extends State<HomeContent> {
           ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.pets, color: Colors.grey, size: 28),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const MyPetsForSale()),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(
-              Icons.logout,
-              color: Color.fromARGB(255, 255, 140, 0),
-              size: 28,
-            ),
-            onPressed: () => _logout(context),
-          ),
+          // IconButton(
+          //   icon: const Icon(Icons.pets, color: Colors.grey, size: 28),
+          //   onPressed: () {
+          //     Navigator.push(
+          //       context,
+          //       MaterialPageRoute(builder: (_) => const MyPetsForSale()),
+          //     );
+          //   },
+          // ),
+          // IconButton(
+          //   icon: const Icon(
+          //     Icons.logout,
+          //     color: Color.fromARGB(255, 255, 140, 0),
+          //     size: 28,
+          //   ),
+          //   onPressed: () => _logout(context),
+          // ),
         ],
       ),
       body: SingleChildScrollView(
@@ -866,6 +866,16 @@ class _HomeContentState extends State<HomeContent> {
               ),
               children: [
                 serviceCard(
+                  "My Pets For Sale",
+                  Icons.pets,
+                  "https://images.unsplash.com/photo-1583337130417-3346a1be7dee",
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const MyPetsForSale()),
+                  ),
+                ),
+                serviceCard(
                   "Doctors",
                   Icons.medical_services_rounded,
                   "https://images.unsplash.com/photo-1537368910025-700350fe46c7",
@@ -879,7 +889,7 @@ class _HomeContentState extends State<HomeContent> {
                 serviceCard(
                   "Pet Shops",
                   Icons.store_mall_directory_rounded,
-                  "https://images.unsplash.com/photo-1583337130417-3346a1be7dee",
+                  "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d",
                   () => Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const Viewshop()),
@@ -895,6 +905,7 @@ class _HomeContentState extends State<HomeContent> {
                         builder: (context) => const MyComplaintsPage()),
                   ),
                 ),
+                
               ],
             ),
 

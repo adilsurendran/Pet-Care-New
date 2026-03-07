@@ -440,11 +440,27 @@ class _RegisterState extends State<Register> {
                 const SizedBox(height: 40),
 
                 buildTextField(
-                  'Full Name',
-                  controller: nameController,
-                  icon: Icons.person_outline,
-                  validator: (v) => v!.length < 3 ? "Min 3 characters" : null,
-                ),
+  'Full Name',
+  controller: nameController,
+  icon: Icons.person_outline,
+  validator: (v) {
+    if (v == null || v.isEmpty) {
+      return "Name is required";
+    }
+
+    if (v.length < 3) {
+      return "Min 3 characters";
+    }
+
+    final nameRegex = RegExp(r'^[a-zA-Z\s]+$');
+
+    if (!nameRegex.hasMatch(v)) {
+      return "Only letters allowed";
+    }
+
+    return null;
+  },
+),
 
                 buildTextField(
                   'Email Address',

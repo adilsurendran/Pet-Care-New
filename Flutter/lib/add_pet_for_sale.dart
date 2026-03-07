@@ -257,8 +257,10 @@ class _AddPetForSaleState extends State<AddPetForSale> {
   final TextEditingController ageCtrl = TextEditingController();
   final TextEditingController priceCtrl = TextEditingController();
 
-  File? mobileImage;              // Android / iOS
-  Uint8List? webImageBytes;       // Web
+  String selectedGender = 'Male';
+
+  File? mobileImage; // Android / iOS
+  Uint8List? webImageBytes; // Web
 
   bool loading = false;
 
@@ -268,8 +270,7 @@ class _AddPetForSaleState extends State<AddPetForSale> {
      PICK IMAGE (WEB + MOBILE)
   ====================== */
   Future<void> pickImage() async {
-    final XFile? picked =
-        await picker.pickImage(source: ImageSource.gallery);
+    final XFile? picked = await picker.pickImage(source: ImageSource.gallery);
 
     if (picked == null) return;
 
@@ -288,11 +289,10 @@ class _AddPetForSaleState extends State<AddPetForSale> {
   Future<void> submitPet() async {
     if (!_formKey.currentState!.validate()) return;
 
-    if (!kIsWeb && mobileImage == null ||
-        kIsWeb && webImageBytes == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please select an image")),
-      );
+    if (!kIsWeb && mobileImage == null || kIsWeb && webImageBytes == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please select an image")));
       return;
     }
 
@@ -304,6 +304,7 @@ class _AddPetForSaleState extends State<AddPetForSale> {
         "breed": breedCtrl.text.trim(),
         "age": ageCtrl.text.trim(),
         "price": priceCtrl.text.trim(),
+        "gender": selectedGender,
 
         if (!kIsWeb && mobileImage != null)
           "image": await MultipartFile.fromFile(
@@ -321,21 +322,19 @@ class _AddPetForSaleState extends State<AddPetForSale> {
       await dio.post(
         "$baseUrl/api/sell/$usrid",
         data: formData,
-        options: Options(headers: {
-          "Content-Type": "multipart/form-data",
-        }),
+        options: Options(headers: {"Content-Type": "multipart/form-data"}),
       );
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Pet added successfully")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Pet added successfully")));
 
       Navigator.pop(context);
     } catch (e) {
       debugPrint("Add Pet Error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Failed to add pet")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Failed to add pet")));
     } finally {
       setState(() => loading = false);
     }
@@ -418,6 +417,51 @@ class _AddPetForSaleState extends State<AddPetForSale> {
 
               const SizedBox(height: 15),
 
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                child: Row(
+                  children: [
+                    const Text(
+                      "  Gender:",
+                      style: TextStyle(fontSize: 16, color: Colors.black54),
+                    ),
+                    const SizedBox(width: 10),
+                    Radio<String>(
+                      value: 'Male',
+                      groupValue: selectedGender,
+                      activeColor: const Color.fromARGB(250, 218, 98, 17),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedGender = value!;
+                        });
+                      },
+                    ),
+                    const Text("Male", style: TextStyle(fontSize: 16)),
+                    const SizedBox(width: 10),
+                    Radio<String>(
+                      value: 'Female',
+                      groupValue: selectedGender,
+                      activeColor: const Color.fromARGB(250, 218, 98, 17),
+                      onChanged: (value) {
+                        setState(() {
+                          selectedGender = value!;
+                        });
+                      },
+                    ),
+                    const Text("Female", style: TextStyle(fontSize: 16)),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
               TextFormField(
                 controller: priceCtrl,
                 decoration: _inputDecoration("Price"),
@@ -434,8 +478,7 @@ class _AddPetForSaleState extends State<AddPetForSale> {
                 child: ElevatedButton(
                   onPressed: loading ? null : submitPet,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color.fromARGB(250, 218, 98, 17),
+                    backgroundColor: const Color.fromARGB(250, 218, 98, 17),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -487,8 +530,7 @@ class _AddPetForSaleState extends State<AddPetForSale> {
         children: const [
           Icon(Icons.add_a_photo, size: 40, color: Colors.grey),
           SizedBox(height: 8),
-          Text("Tap to add pet image",
-              style: TextStyle(color: Colors.grey)),
+          Text("Tap to add pet image", style: TextStyle(color: Colors.grey)),
         ],
       );
     }

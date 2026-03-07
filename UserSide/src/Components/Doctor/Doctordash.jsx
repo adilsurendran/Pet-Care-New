@@ -15,6 +15,7 @@ const DoctorDash = () => {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const doctorId = localStorage.getItem("userId");
+  console.log("Doctor ID from localStorage:", doctorId);
   const doctorName = localStorage.getItem("name") || "Doctor";
   const navigate = useNavigate();
 
@@ -23,7 +24,9 @@ const DoctorDash = () => {
       try {
         // Fetch Guides
         const guidesRes = await axios.get("http://localhost:5000/api/viewguides");
-        const myGuides = guidesRes.data.guides.filter(g => g.docId === doctorId);
+        console.log(guidesRes);
+        
+        const myGuides = guidesRes.data.guides.filter(g => g.docId._id === localStorage.getItem("user"));
 
         // Fetch Chats
         const chatsRes = await axios.get(`http://localhost:5000/api/chat/doctor/list/${doctorId}`);
@@ -113,7 +116,7 @@ const DoctorDash = () => {
             </div>
           </motion.div>
 
-          <motion.div className="stat-card" variants={itemVariants}>
+          {/* <motion.div className="stat-card" variants={itemVariants}>
             <div className="card-pattern"></div>
             <div className="stat-icon green-theme">
               <FaCalendarCheck />
@@ -122,7 +125,7 @@ const DoctorDash = () => {
               <h3>{stats.appointments}</h3>
               <p>Today's Schedule</p>
             </div>
-          </motion.div>
+          </motion.div> */}
         </motion.div>
 
         <div className="dashboard-sections">

@@ -1,5 +1,5 @@
 import express from 'express';
-import { acceptBooking, acceptOrderBooking, addComment, addGuide, addPet, addPetForSale, addProduct, AddtoCart, bookDoctor, bookProduct, buyPet, cancelOrderBooking, createOrGetChat, createPost, deleteDoctor, deleteGuide, deletePet, DeletePetsForSale, deletePost, deleteProduct, DeleteUser, deliverOrderBooking, doctorRegistration, EditPetForSale, editProduct, getAllBuyers, getAlldoct, getAllPosts, getAllProducts, getAllShops, getAllShopswithavailableProducts, getAllUsers, getBuyerOrders, getChatList, getDocBooking, getDoctorChatList, getMessages, getMyPetsForSale, getOrdersByUser, getPetById, getPetsForSale, getSellerOrders, getUserPets, getUserProfile, login, refillMoney, RejectBooking, RejectOrderBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleLike, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateCartQuantity, updateDoctor, updateOrderStatus, updatePet, updateUserProfile, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
+import { acceptBooking, acceptOrderBooking, addComment, addGuide, addPet, addPetForSale, addProduct, AddtoCart, blockUnblockDoctor, bookDoctor, bookProduct, buyPet, cancelOrderBooking, createOrGetChat, createPost, deleteDoctor, deleteGuide, deletePet, DeletePetsForSale, deletePost, deleteProduct, DeleteUser, deliverOrderBooking, doctorRegistration, doctorRegistrationFromLogin, EditPetForSale, editProduct, getAllBuyers, getAlldoct, getAllPosts, getAllProducts, getAllShops, getAllShopswithavailableProducts, getAllUsers, getBuyerOrders, getChatList, getDocBooking, getDoctorChatList, getMessages, getMyPetsForSale, getOrdersByUser, getPetById, getPetsForSale, getSellerOrders, getUserPets, getUserProfile, login, refillMoney, RejectBooking, RejectOrderBooking, RemoveItemFromCart, SendComplaint, sendMessage, SendReply, shopRegistration, TodaysAppointment, toggleLike, toggleProductAvailability, toggleShopStatus, toggleUserBlock, updateCartQuantity, updateDoctor, updateOrderStatus, updatePet, updateUserProfile, userRegistration, ViewCart, viewComplaintandReplyByUser, ViewComplaints, ViewGuide, viewOrdersByProductOwner, viewProductById, viewProductsByUserId } from '../Controller/Controller.js';
 import upload from '../middleware/upload.js'; 
 
 
@@ -7,6 +7,8 @@ const route = express.Router();
 
 route.post('/userregistration', userRegistration);
 route.post('/doctorreg',upload.single("doctorImage"), doctorRegistration)
+route.post('/doctorreg/fromlogin',upload.single("doctorImage"), doctorRegistrationFromLogin)
+route.post("/doctor/block", blockUnblockDoctor);
 route.get('/getallusers', getAllUsers)
 route.get('/getalldoctors', getAlldoct)
 // route.post('/addproduct/:id', upload.array('productImages'), AddProduct);
